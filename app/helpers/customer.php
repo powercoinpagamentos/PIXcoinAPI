@@ -6,11 +6,11 @@ use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Token\InvalidTokenStructure;
 use Lcobucci\JWT\Validation\RequiredConstraintsViolated;
 
-function validateAdminToken(string $jwt): bool
+function validateCustomerToken(string $jwt): bool
 {
     $config = Configuration::forSymmetricSigner(
         new Sha256(),
-        InMemory::plainText(env('SECRET_PESSOA'))
+        InMemory::plainText(env('JWT_SECRET'))
     );
 
     try {
