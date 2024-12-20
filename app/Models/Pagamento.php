@@ -2,11 +2,23 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Pagamento extends Model
 {
+    use HasUuids;
+
+    /**
+     * Indica que a chave primária não é um número incremental.
+     *
+     * @var bool
+     */
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+
     protected $table = 'pagamentos';
 
     protected $fillable = [

@@ -22,7 +22,7 @@ class CreateTestMachine extends Seeder
             $pessoa = Pessoa::where('email', 'krynevictor0736@gmail.com')->first();
 
             Maquina::create([
-                'id' => Str::uuid(),
+                'id' => 'fdd2096d-bfa4-44d0-be38-527466baece1',
                 'pessoa_id' => $pessoa->id,
                 'cliente_id' => $cliente->id,
                 'nome' => 'Máquina 01 PIXCOIN',
