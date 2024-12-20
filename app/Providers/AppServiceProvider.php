@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Services\Discord;
+use App\Services\Interfaces\IDiscord;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -11,7 +13,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->registerItRestServices();
     }
 
     /**
@@ -19,6 +21,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+    }
+
+    private function registerItRestServices(): void
+    {
+        $this->app->singleton(IDiscord::class, function () {
+            return new Discord();
+        });
     }
 }

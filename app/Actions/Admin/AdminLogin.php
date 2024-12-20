@@ -3,6 +3,7 @@
 namespace App\Actions\Admin;
 
 use App\Models\Pessoa;
+use App\Services\Interfaces\IDiscord;
 use DateMalformedStringException;
 use DateTimeImmutable;
 use Illuminate\Http\JsonResponse;
@@ -14,7 +15,7 @@ use Random\RandomException;
 
 readonly class AdminLogin
 {
-    public function __construct(private string $email, private string $password,)
+    public function __construct(private string $email, private string $password)
     {
     }
 
@@ -30,6 +31,8 @@ readonly class AdminLogin
         }
 
         $this->updateLastAccess($user);
+
+        $this->notifierDiscord();
 
         return response()->json([
             'email' => $user->email,
@@ -75,5 +78,17 @@ readonly class AdminLogin
             ->getToken($config->signer(), $config->signingKey());
 
         return $token->toString();
+    }
+
+    private function notifierDiscord(): void
+    {
+        /** @var IDiscord $discordAPI */
+        $discordAPI = resolve(IDiscord::class);
+
+        $discordAPI->notificar(
+            env('NOTIFICACOES_LOGINS'),
+            'Novo login efetuado!',
+            'O admin de email ' . $this->email . ' acabou de realizar login.',
+        );
     }
 }
