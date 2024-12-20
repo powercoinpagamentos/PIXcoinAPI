@@ -37,8 +37,8 @@ readonly class AdminLogin
         return response()->json([
             'email' => $user->email,
             'id' => $user->id,
-            'nome' => $user->nome,
-            'ultimoLogin' => $user->ultimo_acesso->setTimezone('America/Sao_Paulo')->format('Y-m-d\TH:i:sP'),
+            'name' => $user->nome,
+            'lastLogin' => $user->ultimo_acesso->setTimezone('America/Sao_Paulo')->format('Y-m-d\TH:i:sP'),
             'token' => $this->generateJWT($user->id),
             'type' => 'pessoa',
             'key' => 'ADMIN'

@@ -36,11 +36,13 @@ readonly class CustomerLogin
         return response()->json([
             'email' => $customer->email,
             'id' => $customer->id,
-            'nome' => $customer->nome,
-            'ultimoLogin' => $customer->ultimo_acesso->setTimezone('America/Sao_Paulo')->format('Y-m-d\TH:i:sP'),
+            'name' => $customer->nome,
+            'lastLogin' => $customer->ultimo_acesso->setTimezone('America/Sao_Paulo')->format('Y-m-d\TH:i:sP'),
             'token' => $this->generateJWT($customer->id),
             'type' => 'pessoa',
-            'key' => 'CLIENTE'
+            'key' => 'CLIENT',
+            'ativo' => (bool)$customer->ativo,
+            'vencimento' => $customer->data_vencimento
         ]);
     }
 
