@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Actions\Machine\GetAllMachines;
 use App\Helpers\CustomerHelper;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class MachineController extends Controller
 {
-    public function all(Request $request)
+    public function all(Request $request): JsonResponse
     {
         $token = $request->header('x-access-token');
         $userId = (new CustomerHelper())->validateToken($token);
