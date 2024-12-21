@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Actions\Machine\GetAllMachines;
 use App\Actions\Machine\GetPayments;
 use App\Actions\Machine\RemovePayments;
+use App\Actions\Machine\RemoveSelectedPayments;
 use App\Helpers\CustomerHelper;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -42,5 +43,14 @@ class MachineController extends Controller
         }
 
         return (new RemovePayments($machineId))->run();
+    }
+
+    public function removeSelectedPayments(Request $request): JsonResponse
+    {
+        $machineId = $request->get('machineId');
+        $startDate = $request->get('startDate');
+        $endDate = $request->get('endDate');
+
+        return (new RemoveSelectedPayments($machineId, $startDate, $endDate))->run();
     }
 }
