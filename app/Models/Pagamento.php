@@ -24,7 +24,7 @@ class Pagamento extends Model
     protected $fillable = [
         'maquina_id',
         'valor',
-        'mercado_pago_id',
+        'mercadoPagoId',
         'estornado',
         'motivo_estorno',
         'tipo',

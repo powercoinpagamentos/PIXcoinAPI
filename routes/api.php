@@ -10,3 +10,5 @@ Route::post('/login-pessoa', [AdminController::class, 'login']);
 Route::post('/login-cliente', [CustomerController::class, 'login']);
 
 Route::get('/maquinas', [MachineController::class, 'all']);
+
+Route::get('/pagamentos/{id}', [MachineController::class, 'payments']);

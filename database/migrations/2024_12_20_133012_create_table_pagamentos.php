@@ -16,7 +16,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->uuid('maquina_id')->nullable();
             $table->string('valor');
-            $table->string('mercado_pago_id')->nullable();
+            $table->string('mercadoPagoId')->nullable();
             $table->boolean('estornado');
             $table->string('motivo_estorno')->nullable();
             $table->string('tipo')->nullable();

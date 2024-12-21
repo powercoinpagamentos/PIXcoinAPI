@@ -19,7 +19,7 @@ class CreatePaymentTest extends Seeder
                 'id' => Str::uuid(),
                 'maquina_id' => 'fdd2096d-bfa4-44d0-be38-527466baece1',
                 'valor' => '10',
-                'mercado_pago_id' => '94976984449',
+                'mercadoPagoId' => '94976984449',
                 'estornado' => 0,
                 'motivo_estorno' => '',
                 'tipo' => 'credit_card',

@@ -2,6 +2,7 @@
 
 namespace App\Actions\Machine;
 
+use App\Helpers\PaymentHelper;
 use App\Models\Maquina;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -58,25 +59,7 @@ readonly class GetAllMachines
                 ->orderBy('data', 'desc')
                 ->get();
 
-            $totais = [
-                'totalSemEstorno' => 0,
-                'totalComEstorno' => 0,
-                'totalEspecie' => 0,
-            ];
-
-            foreach ($pagamentosDaMaquina as $pagamento) {
-                $valor = floatval($pagamento->valor) ?: 0;
-
-                if ($pagamento->estornado) {
-                    $totais['totalComEstorno'] += $valor;
-                } else {
-                    $totais['totalSemEstorno'] += $valor;
-                }
-
-                if ($pagamento->mercado_pago_id === 'CASH') {
-                    $totais['totalEspecie'] += $valor;
-                }
-            }
+            $totais = (new PaymentHelper())->getTotalPayments($pagamentosDaMaquina);
 
             return [
                 'id' => $machine->id,
