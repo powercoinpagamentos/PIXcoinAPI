@@ -3,6 +3,7 @@
 namespace App\Actions\Machine;
 
 use App\Models\Maquina;
+use App\Services\Interfaces\IDiscord;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 
@@ -24,6 +25,8 @@ readonly class AddRemoteCredit
             'ultimo_pagamento_recebido' => now(),
             'valor_do_pix' => $this->value
         ]);
+
+        $this->notifierDiscord();
 
         return response()->json(['retorno' => 'CREDITO INSERIDO']);
     }
@@ -56,5 +59,17 @@ readonly class AddRemoteCredit
     private function tempoOffline(Carbon $data): int
     {
         return Carbon::now()->diffInSeconds($data);
+    }
+
+    private function notifierDiscord(): void
+    {
+        /** @var IDiscord $discordAPI */
+        $discordAPI = resolve(IDiscord::class);
+
+        $discordAPI->notificar(
+            env('NOTIFICACOES_CREDITO_REMOTO'),
+            "CRÉDITO REMOTO DE R$: $this->value",
+            '',
+        );
     }
 }
