@@ -5,6 +5,11 @@
     <meta charset="UTF-8">
     <title>Relatório de Pagamentos</title>
     <style>
+
+        img {
+            width: 100%;
+            height: 400px;
+        }
         body {
             font-family: Arial, sans-serif;
         }
@@ -32,9 +37,10 @@
     </style>
 </head>
 <body>
+{{--<img src="{{ public_path('img.png') }}" alt="AA">--}}
 <div class="header">
+    <img src="{{ public_path('img.png') }}" alt="AA">
     <h1>Relatório de Pagamentos</h1>
-    <h3>Gerado por PIXCoin</h3>
     <p>Máquina: {{ $maquinaNome }}</p>
     <p>{{ Carbon::parse($startDate)->format('d/m/Y') }} - {{ Carbon::parse($endDate)->format('d/m/Y') }}</p>
 </div>
