@@ -23,7 +23,7 @@ readonly class RemoveSelectedPayments
 
         $paymentsRemoved = Pagamento::query()
             ->where('maquina_id', $this->machineId)
-            ->whereBetween('created_at', [$startDate, $endDate])
+            ->whereBetween('data', [$startDate, $endDate])
             ->delete();
 
         return response()->json([
