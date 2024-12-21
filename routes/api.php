@@ -12,10 +12,12 @@ Route::post('/relatorio-01-cash-adm', [AdminController::class, 'paymentsCashRepo
 Route::post('/relatorio-02-taxas-adm', [AdminController::class, 'paymentsTaxReport']);
 Route::post('/relatorio-03-pagamentos-adm', [AdminController::class, 'paymentsReport']);
 Route::post('/relatorio-04-estornos-adm', [AdminController::class, 'paymentsRefundsReport']);
+Route::put('/maquina', [AdminController::class, 'updateMachine']);
 
 Route::post('/login-cliente', [CustomerController::class, 'login']);
 
 Route::get('/maquinas', [MachineController::class, 'all']);
+Route::put('/maquina-cliente', [MachineController::class, 'update']);
 Route::get('/pagamentos/{machineId}', [MachineController::class, 'payments']);
 Route::post('/pagamentos-periodo/{machineId}', [MachineController::class, 'paymentsByPeriod']);
 Route::delete('/delete-pagamentos/{machineId}', [MachineController::class, 'removePayments']);

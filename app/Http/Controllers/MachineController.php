@@ -7,6 +7,7 @@ use App\Actions\Machine\GetPayments;
 use App\Actions\Machine\GetPaymentsByPeriod;
 use App\Actions\Machine\RemovePayments;
 use App\Actions\Machine\RemoveSelectedPayments;
+use App\Actions\Machine\UpdateMachine;
 use App\Actions\Report\PaymentsCashReport;
 use App\Actions\Report\PaymentsPDFReport;
 use App\Actions\Report\PaymentsRefundsReport;
@@ -17,6 +18,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Response;
+use Illuminate\Support\Arr;
 
 class MachineController extends Controller
 {
@@ -29,6 +31,20 @@ class MachineController extends Controller
         }
 
         return (new GetAllMachines($userId))->run();
+    }
+
+    public function update(Request $request): JsonResponse
+    {
+        $token = $request->header('x-access-token');
+        $userId = (new CustomerHelper())->validateToken($token);
+        if (!$userId) {
+            return response()->json(['error' => 'Usuário sem autorização.'], 401);
+        }
+
+        $machineData = $request->all();
+        Arr::forget($machineData, 'id');
+
+        return (new UpdateMachine($machineData, $request->get('id')))->run();
     }
 
     public function payments(Request $request, string $machineId): JsonResponse

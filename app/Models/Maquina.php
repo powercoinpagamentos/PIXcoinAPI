@@ -31,7 +31,7 @@ class Maquina extends Model
         'maquininha_serial',
         'estoque',
         'valor_do_pix',
-        'valor_do_pulso',
+        'valorDoPulso',
         'data_inclusao',
         'ultimo_pagamento_recebido',
         'ultima_requisicao',

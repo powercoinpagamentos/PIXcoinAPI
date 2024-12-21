@@ -75,7 +75,7 @@ readonly class GetAllMachines
                 'ultimo_pagamento_recebido' => $machine->ultimo_pagamento_recebido,
                 'ultima_requisicao' => $machine->ultima_requisicao,
                 'status' => $status,
-                'pulso' => $machine->valor_do_pulso,
+                'pulso' => $machine->valorDoPulso,
                 'totalSemEstorno' => $totais['totalSemEstorno'],
                 'totalEspecie' => $totais['totalEspecie'],
                 'totalComEstorno' => $totais['totalComEstorno'],

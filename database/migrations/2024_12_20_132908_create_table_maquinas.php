@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('maquininha_serial')->nullable();
             $table->integer('estoque')->nullable();
             $table->string('valor_do_pix');
-            $table->string('valor_do_pulso')->default('1');
+            $table->string('valorDoPulso')->default('1');
             $table->timestamp('data_inclusao')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('ultimo_pagamento_recebido')->nullable();
             $table->timestamp('ultima_requisicao')->nullable();

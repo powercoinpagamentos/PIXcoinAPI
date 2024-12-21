@@ -31,7 +31,7 @@ class CreateTestMachine extends Seeder
                 'maquininha_serial' => 'SERIAL_TESTE',
                 'estoque' => 0,
                 'valor_do_pix' => '0',
-                'valor_do_pulso' => '1',
+                'valorDoPulso' => '1',
                 'data_inclusao' => now(),
                 'ultimo_pagamento_recebido' => now(),
                 'ultima_requisicao' => now(),

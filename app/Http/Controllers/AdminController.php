@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Actions\Admin\AdminLogin;
 use App\Actions\Machine\GetPaymentsByPeriod;
 use App\Actions\Machine\RemovePayments;
+use App\Actions\Machine\UpdateMachine;
 use App\Actions\Report\PaymentsCashReport;
 use App\Actions\Report\PaymentsRefundsReport;
 use App\Actions\Report\PaymentsReport;
@@ -13,6 +14,7 @@ use App\Helpers\AdminHelper;
 use App\Http\Requests\Admin\AdminLoginRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 class AdminController extends Controller
 {
@@ -109,5 +111,19 @@ class AdminController extends Controller
         $endDate = $request->get('dataFim');
 
         return (new PaymentsRefundsReport($machineId, $startDate, $endDate))->run();
+    }
+
+    public function updateMachine(Request $request): JsonResponse
+    {
+        $token = $request->header('x-access-token');
+        $userId = (new AdminHelper())->validateAdminToken($token);
+        if (!$userId) {
+            return response()->json(['error' => 'Usuário sem autorização.'], 401);
+        }
+
+        $machineData = $request->all();
+        Arr::forget($machineData, 'id');
+
+        return (new UpdateMachine($machineData, $request->get('id')))->run();
     }
 }
