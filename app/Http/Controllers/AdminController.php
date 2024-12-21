@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Admin\AdminLogin;
+use App\Actions\Machine\AddRemoteCredit;
 use App\Actions\Machine\GetPaymentsByPeriod;
 use App\Actions\Machine\RemovePayments;
 use App\Actions\Machine\UpdateMachine;
@@ -125,5 +126,16 @@ class AdminController extends Controller
         Arr::forget($machineData, 'id');
 
         return (new UpdateMachine($machineData, $request->get('id')))->run();
+    }
+
+    public function addRemoteCreditOnMachine(Request $request): JsonResponse
+    {
+        $token = $request->header('x-access-token');
+        $userId = (new AdminHelper())->validateAdminToken($token);
+        if (!$userId) {
+            return response()->json(['error' => 'Usuário sem autorização.'], 401);
+        }
+
+        return (new AddRemoteCredit($request->get('id'), $request->get('valor')))->run();
     }
 }

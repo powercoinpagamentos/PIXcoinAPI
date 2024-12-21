@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Machine\AddRemoteCredit;
 use App\Actions\Machine\GetAllMachines;
 use App\Actions\Machine\GetPayments;
 use App\Actions\Machine\GetPaymentsByPeriod;
@@ -45,6 +46,17 @@ class MachineController extends Controller
         Arr::forget($machineData, 'id');
 
         return (new UpdateMachine($machineData, $request->get('id')))->run();
+    }
+
+    public function addRemoteCredit(Request $request): JsonResponse
+    {
+        $token = $request->header('x-access-token');
+        $userId = (new CustomerHelper())->validateToken($token);
+        if (!$userId) {
+            return response()->json(['error' => 'Usuário sem autorização.'], 401);
+        }
+
+        return (new AddRemoteCredit($request->get('id'), $request->get('valor')))->run();
     }
 
     public function payments(Request $request, string $machineId): JsonResponse
