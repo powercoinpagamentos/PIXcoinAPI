@@ -25,7 +25,7 @@ class CreatePaymentTest extends Seeder
                 'tipo' => 'credit_card',
                 'taxas' => '',
                 'cliente_id' => '2a7e1906-0d5f-437e-a456-d8f7d950f654',
-                'operadora' => '',
+                'operadora' => 'TESTE',
                 'data' => now(),
             ]);
         }
