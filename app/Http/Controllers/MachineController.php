@@ -8,12 +8,15 @@ use App\Actions\Machine\GetPaymentsByPeriod;
 use App\Actions\Machine\RemovePayments;
 use App\Actions\Machine\RemoveSelectedPayments;
 use App\Actions\Report\PaymentsCashReport;
+use App\Actions\Report\PaymentsPDFReport;
 use App\Actions\Report\PaymentsRefundsReport;
 use App\Actions\Report\PaymentsReport;
 use App\Actions\Report\PaymentsTaxReport;
 use App\Helpers\CustomerHelper;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Response;
 
 class MachineController extends Controller
 {
@@ -131,5 +134,17 @@ class MachineController extends Controller
         $endDate = $request->get('dataFim');
 
         return (new PaymentsRefundsReport($machineId, $startDate, $endDate))->run();
+    }
+
+    public function paymentsReportPDF(Request $request): Response
+    {
+        $startDate = $request->get('startDate');
+        $endDate = $request->get('endDate');
+        $machineId = $request->get('machineId');
+
+        $data = (new PaymentsPDFReport($machineId, $startDate, $endDate))->run();
+        $pdf = PDF::loadView('pdf.payment_report', $data);
+
+        return $pdf->download('relatorio_pagamentos.pdf');
     }
 }

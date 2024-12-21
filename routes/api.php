@@ -24,3 +24,4 @@ Route::post('/relatorio-01-cash', [MachineController::class, 'paymentsCashReport
 Route::post('/relatorio-02-taxas', [MachineController::class, 'paymentsTaxReport']);
 Route::post('/relatorio-03-pagamentos', [MachineController::class, 'paymentsReport']);
 Route::post('/relatorio-04-estornos', [MachineController::class, 'paymentsRefundsReport']);
+Route::post('/relatorio-pagamento-pdf', [MachineController::class, 'paymentsReportPDF']);
