@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Actions\Admin\AdminLogin;
 use App\Actions\Machine\GetPaymentsByPeriod;
 use App\Actions\Machine\RemovePayments;
+use App\Actions\Report\PaymentsCashReport;
 use App\Actions\Report\PaymentsRefundsReport;
 use App\Actions\Report\PaymentsReport;
 use App\Actions\Report\PaymentsTaxReport;
@@ -48,6 +49,21 @@ class AdminController extends Controller
         }
 
         return (new RemovePayments($machineId))->run();
+    }
+
+    public function paymentsCashReport(Request $request): JsonResponse
+    {
+        $token = $request->header('x-access-token');
+        $userId = (new AdminHelper())->validateAdminToken($token);
+        if (!$userId) {
+            return response()->json(['error' => 'Usuário sem autorização.'], 401);
+        }
+
+        $machineId = $request->get('maquinaId');
+        $startDate = $request->get('dataInicio');
+        $endDate = $request->get('dataFim');
+
+        return (new PaymentsCashReport($machineId, $startDate, $endDate))->run();
     }
 
     public function paymentsTaxReport(Request $request): JsonResponse

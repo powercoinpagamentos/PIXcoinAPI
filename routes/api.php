@@ -8,9 +8,10 @@ use Illuminate\Support\Facades\Route;
 Route::post('/login-pessoa', [AdminController::class, 'login']);
 Route::post('/pagamentos-periodo-adm/{machineId}', [AdminController::class, 'paymentsByPeriod']);
 Route::delete('/delete-pagamentos-adm/{machineId}', [AdminController::class, 'removePayments']);
+Route::post('/relatorio-01-cash-adm', [AdminController::class, 'paymentsCashReport']);
+Route::post('/relatorio-02-taxas-adm', [AdminController::class, 'paymentsTaxReport']);
 Route::post('/relatorio-03-pagamentos-adm', [AdminController::class, 'paymentsReport']);
 Route::post('/relatorio-04-estornos-adm', [AdminController::class, 'paymentsRefundsReport']);
-Route::post('/relatorio-02-taxas-adm', [AdminController::class, 'paymentsTaxReport']);
 
 Route::post('/login-cliente', [CustomerController::class, 'login']);
 
@@ -19,6 +20,7 @@ Route::get('/pagamentos/{machineId}', [MachineController::class, 'payments']);
 Route::post('/pagamentos-periodo/{machineId}', [MachineController::class, 'paymentsByPeriod']);
 Route::delete('/delete-pagamentos/{machineId}', [MachineController::class, 'removePayments']);
 Route::post('/delete-selected-payments', [MachineController::class, 'removeSelectedPayments']);
+Route::post('/relatorio-01-cash', [MachineController::class, 'paymentsCashReport']);
 Route::post('/relatorio-02-taxas', [MachineController::class, 'paymentsTaxReport']);
 Route::post('/relatorio-03-pagamentos', [MachineController::class, 'paymentsReport']);
 Route::post('/relatorio-04-estornos', [MachineController::class, 'paymentsRefundsReport']);
