@@ -9,6 +9,7 @@ Route::post('/login-pessoa', [AdminController::class, 'login']);
 Route::post('/pagamentos-periodo-adm/{machineId}', [AdminController::class, 'paymentsByPeriod']);
 Route::delete('/delete-pagamentos-adm/{machineId}', [AdminController::class, 'removePayments']);
 Route::post('/relatorio-03-pagamentos', [AdminController::class, 'paymentsReport']);
+Route::post('/relatorio-04-estornos', [AdminController::class, 'paymentsRefundsReport']);
 
 Route::post('/login-cliente', [CustomerController::class, 'login']);
 
@@ -18,3 +19,4 @@ Route::post('/pagamentos-periodo/{machineId}', [MachineController::class, 'payme
 Route::delete('/delete-pagamentos/{machineId}', [MachineController::class, 'removePayments']);
 Route::post('/delete-selected-payments', [MachineController::class, 'removeSelectedPayments']);
 Route::post('/relatorio-03-pagamentos', [MachineController::class, 'paymentsReport']);
+Route::post('/relatorio-04-estornos', [MachineController::class, 'paymentsRefundsReport']);

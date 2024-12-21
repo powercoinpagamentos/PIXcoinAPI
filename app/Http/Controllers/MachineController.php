@@ -7,6 +7,7 @@ use App\Actions\Machine\GetPayments;
 use App\Actions\Machine\GetPaymentsByPeriod;
 use App\Actions\Machine\RemovePayments;
 use App\Actions\Machine\RemoveSelectedPayments;
+use App\Actions\Report\PaymentsRefundsReport;
 use App\Actions\Report\PaymentsReport;
 use App\Helpers\CustomerHelper;
 use Illuminate\Http\JsonResponse;
@@ -83,5 +84,20 @@ class MachineController extends Controller
         $endDate = $request->get('dataFim');
 
         return (new PaymentsReport($machineId, $startDate, $endDate))->run();
+    }
+
+    public function paymentsRefundsReport(Request $request): JsonResponse
+    {
+        $token = $request->header('x-access-token');
+        $userId = (new CustomerHelper())->validateToken($token);
+        if (!$userId) {
+            return response()->json(['error' => 'Usuário sem autorização.'], 401);
+        }
+
+        $machineId = $request->get('maquinaId');
+        $startDate = $request->get('dataInicio');
+        $endDate = $request->get('dataFim');
+
+        return (new PaymentsRefundsReport($machineId, $startDate, $endDate))->run();
     }
 }
