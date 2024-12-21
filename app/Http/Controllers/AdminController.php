@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Admin\AdminLogin;
+use App\Actions\Machine\GetPaymentsByPeriod;
 use App\Actions\Machine\RemovePayments;
 use App\Helpers\AdminHelper;
 use App\Http\Requests\Admin\AdminLoginRequests;
@@ -19,6 +20,20 @@ class AdminController extends Controller
     {
         $adminLoginAction = new AdminLogin($request->email, $request->senha);
         return $adminLoginAction->run();
+    }
+
+    public function paymentsByPeriod(Request $request, string $machineId): JsonResponse
+    {
+        $token = $request->header('x-access-token');
+        $userId = (new AdminHelper())->validateAdminToken($token);
+        if (!$userId) {
+            return response()->json(['error' => 'Usuário sem autorização.'], 401);
+        }
+
+        $startDate = $request->get('dataInicio');
+        $endDate = $request->get('dataFim');
+
+        return (new GetPaymentsByPeriod($machineId, $startDate, $endDate))->run();
     }
 
     public function removePayments(Request $request, string $machineId): JsonResponse
