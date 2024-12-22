@@ -16,7 +16,6 @@ readonly class GetAllCustomers
 
     private function getCustomers(): Collection
     {
-        return Cliente::whereHas('maquinas')->with('maquinas')->get();
-
+        return Cliente::with('maquinas')->get();
     }
 }

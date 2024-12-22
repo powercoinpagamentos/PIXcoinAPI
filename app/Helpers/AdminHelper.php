@@ -11,7 +11,7 @@ use Lcobucci\JWT\Token\InvalidTokenStructure;
 
 class AdminHelper
 {
-    public function validateAdminToken(string $jwt): bool
+    public function validateAdminToken(string $jwt): string
     {
         $config = Configuration::forSymmetricSigner(
             new Sha256(),
@@ -30,7 +30,7 @@ class AdminHelper
 
             return $token->claims()->get('userId');
         } catch (RequiredConstraintsViolated | InvalidTokenStructure $e) {
-            return false;
+            return '0';
         }
     }
 }

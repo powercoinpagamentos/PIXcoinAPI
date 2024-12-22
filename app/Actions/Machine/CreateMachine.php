@@ -5,7 +5,7 @@ namespace App\Actions\Machine;
 use App\Models\Maquina;
 use Illuminate\Http\JsonResponse;
 
-class CreateMachine
+readonly class CreateMachine
 {
     public function __construct(private array $data)
     {

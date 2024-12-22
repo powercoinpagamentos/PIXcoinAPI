@@ -21,6 +21,7 @@ Route::post('/credito-remoto', [AdminController::class, 'addRemoteCreditOnMachin
 Route::get('/clientes', [AdminController::class, 'allCustomers']);
 Route::get('/cliente', [AdminController::class, 'getCustomer']);
 Route::put('/alterar-cliente-adm-new/{id}', [AdminController::class, 'updateCustomer']);
+Route::post('/cliente', [AdminController::class, 'createCustomer']);
 
 Route::post('/login-cliente', [CustomerController::class, 'login']);
 
