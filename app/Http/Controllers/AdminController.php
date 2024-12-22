@@ -7,6 +7,7 @@ use App\Actions\Admin\GetAllCustomers;
 use App\Actions\Admin\GetCustomer;
 use App\Actions\Machine\AddRemoteCredit;
 use App\Actions\Machine\GetPaymentsByPeriod;
+use App\Actions\Machine\RemoveMachine;
 use App\Actions\Machine\RemovePayments;
 use App\Actions\Machine\UpdateMachine;
 use App\Actions\Report\PaymentsCashReport;
@@ -128,6 +129,17 @@ class AdminController extends Controller
         Arr::forget($machineData, 'id');
 
         return (new UpdateMachine($machineData, $request->get('id')))->run();
+    }
+
+    public function deleteMachine(Request $request): JsonResponse
+    {
+        $token = $request->header('x-access-token');
+        $userId = (new AdminHelper())->validateAdminToken($token);
+        if (!$userId) {
+            return response()->json(['error' => 'Usuário sem autorização.'], 401);
+        }
+
+        return (new RemoveMachine($request->get('id')))->run();
     }
 
     public function addRemoteCreditOnMachine(Request $request): JsonResponse
