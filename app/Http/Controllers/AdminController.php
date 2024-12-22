@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Actions\Admin\AdminLogin;
 use App\Actions\Customer\GetAllCustomers;
 use App\Actions\Customer\GetCustomer;
+use App\Actions\Customer\UpdateCustomer;
 use App\Actions\Machine\AddRemoteCredit;
 use App\Actions\Machine\DisabledMachine;
 use App\Actions\Machine\RemoveMachine;
@@ -18,6 +19,7 @@ use App\Actions\Report\PaymentsReport;
 use App\Actions\Report\PaymentsTaxReport;
 use App\Helpers\AdminHelper;
 use App\Http\Requests\Admin\AdminLoginRequests;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -199,5 +201,20 @@ class AdminController extends Controller
         $customerId = $request->get('id');
 
         return (new GetCustomer($customerId))->run();
+    }
+
+    public function updateCustomer(Request $request, string $customerId): JsonResponse
+    {
+        $token = $request->header('x-access-token');
+        $userId = (new AdminHelper())->validateAdminToken($token);
+        if (!$userId) {
+            return response()->json(['error' => 'Usuário sem autorização.'], 401);
+        }
+
+        $data = [
+            'nome' => $request->get('nome'),
+            'dataVencimento' => Carbon::parse($request->get('dataVencimento')),
+        ];
+        return (new UpdateCustomer($customerId, $data))->run();
     }
 }

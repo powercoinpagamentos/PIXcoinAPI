@@ -19,6 +19,7 @@ Route::post('/disabled-machine-by-customer/{customerId}', [AdminController::clas
 Route::post('/credito-remoto', [AdminController::class, 'addRemoteCreditOnMachine']);
 Route::get('/clientes', [AdminController::class, 'allCustomers']);
 Route::get('/cliente', [AdminController::class, 'getCustomer']);
+Route::put('/alterar-cliente-adm-new/{id}', [AdminController::class, 'updateCustomer']);
 
 Route::post('/login-cliente', [CustomerController::class, 'login']);
 
