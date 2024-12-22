@@ -7,6 +7,7 @@ use App\Actions\Customer\GetAllCustomers;
 use App\Actions\Customer\GetCustomer;
 use App\Actions\Customer\UpdateCustomer;
 use App\Actions\Machine\AddRemoteCredit;
+use App\Actions\Machine\CreateMachine;
 use App\Actions\Machine\DisabledMachine;
 use App\Actions\Machine\RemoveMachine;
 use App\Actions\Machine\UpdateMachine;
@@ -155,6 +156,26 @@ class AdminController extends Controller
         }
 
         return (new RemoveMachine($request->get('id')))->run();
+    }
+
+    public function createMachine(Request $request): JsonResponse
+    {
+        $token = $request->header('x-access-token');
+        $userId = (new AdminHelper())->validateAdminToken($token);
+        if (!$userId) {
+            return response()->json(['error' => 'Usuário sem autorização.'], 401);
+        }
+
+        $machineData = [
+            'nome' => $request->get('nome'),
+            'descricao' => $request->get('descricao'),
+            'store_id' => $request->get('store_id'),
+            'valorDoPulso' => $request->get('valorDoPulso'),
+            'cliente_id' => $request->get('clienteId'),
+            'valor_do_pix' => '0',
+        ];
+
+        return (new CreateMachine($machineData))->run();
     }
 
     public function addRemoteCreditOnMachine(Request $request): JsonResponse
