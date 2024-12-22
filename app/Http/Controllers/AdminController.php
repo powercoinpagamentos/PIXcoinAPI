@@ -6,6 +6,7 @@ use App\Actions\Admin\AdminLogin;
 use App\Actions\Admin\GetAllCustomers;
 use App\Actions\Admin\GetCustomer;
 use App\Actions\Machine\AddRemoteCredit;
+use App\Actions\Machine\GetPayments;
 use App\Actions\Machine\GetPaymentsByPeriod;
 use App\Actions\Machine\RemoveMachine;
 use App\Actions\Machine\RemovePayments;
@@ -44,6 +45,17 @@ class AdminController extends Controller
         $endDate = $request->get('dataFim');
 
         return (new GetPaymentsByPeriod($machineId, $startDate, $endDate))->run();
+    }
+
+    public function paymentsFromMachine(Request $request, string $machineId): JsonResponse
+    {
+        $token = $request->header('x-access-token');
+        $userId = (new AdminHelper())->validateAdminToken($token);
+        if (!$userId) {
+            return response()->json(['error' => 'Usuário sem autorização.'], 401);
+        }
+
+        return (new GetPayments($machineId))->run();
     }
 
     public function removePayments(Request $request, string $machineId): JsonResponse

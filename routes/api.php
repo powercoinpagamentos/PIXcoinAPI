@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('/login-pessoa', [AdminController::class, 'login']);
 Route::post('/pagamentos-periodo-adm/{machineId}', [AdminController::class, 'paymentsByPeriod']);
 Route::delete('/delete-pagamentos-adm/{machineId}', [AdminController::class, 'removePayments']);
+Route::get('/pagamentos-adm/{machineId}', [AdminController::class, 'paymentsFromMachine']);
 Route::post('/relatorio-01-cash-adm', [AdminController::class, 'paymentsCashReport']);
 Route::post('/relatorio-02-taxas-adm', [AdminController::class, 'paymentsTaxReport']);
 Route::post('/relatorio-03-pagamentos-adm', [AdminController::class, 'paymentsReport']);
