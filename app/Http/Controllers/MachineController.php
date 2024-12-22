@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Machine\AddRemoteCredit;
+use App\Actions\Machine\ConsultMachine;
 use App\Actions\Machine\GetAllMachines;
 use App\Actions\Machine\RemoveSelectedPayments;
 use App\Actions\Machine\UpdateMachine;
@@ -174,5 +175,10 @@ class MachineController extends Controller
         $pdf = PDF::loadView('pdf.payment_report', $data);
 
         return $pdf->download('relatorio_pagamentos.pdf');
+    }
+
+    public function consultMachine(Request $request, string $machineId): JsonResponse
+    {
+        return (new ConsultMachine($machineId))->run();
     }
 }

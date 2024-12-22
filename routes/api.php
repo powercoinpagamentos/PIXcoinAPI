@@ -37,3 +37,4 @@ Route::post('/relatorio-02-taxas', [MachineController::class, 'paymentsTaxReport
 Route::post('/relatorio-03-pagamentos', [MachineController::class, 'paymentsReport']);
 Route::post('/relatorio-04-estornos', [MachineController::class, 'paymentsRefundsReport']);
 Route::post('/relatorio-pagamento-pdf', [MachineController::class, 'paymentsReportPDF']);
+Route::get('/consultar-maquina/{machineId}', [MachineController::class, 'consultMachine']);
