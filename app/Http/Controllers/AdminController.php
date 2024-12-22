@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Admin\AdminLogin;
-use App\Actions\Admin\GetAllCustomers;
-use App\Actions\Admin\GetCustomer;
+use App\Actions\Customer\GetAllCustomers;
+use App\Actions\Customer\GetCustomer;
 use App\Actions\Machine\AddRemoteCredit;
 use App\Actions\Machine\DisabledMachine;
 use App\Actions\Machine\GetPayments;

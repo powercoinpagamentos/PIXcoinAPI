@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Admin;
+namespace App\Actions\Customer;
 
 use App\Models\Cliente;
 use Illuminate\Database\Eloquent\Collection;

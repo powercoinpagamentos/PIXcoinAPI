@@ -5,7 +5,7 @@ namespace App\Actions\Machine;
 use App\Models\Maquina;
 use Illuminate\Http\JsonResponse;
 
-class RemoveMachine
+readonly class RemoveMachine
 {
     public function __construct(private string $machineId)
     {
