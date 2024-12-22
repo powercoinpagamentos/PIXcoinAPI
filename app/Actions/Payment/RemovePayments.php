@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Machine;
+namespace App\Actions\Payment;
 
 use App\Models\Pagamento;
 use Illuminate\Http\JsonResponse;

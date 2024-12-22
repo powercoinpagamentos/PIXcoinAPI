@@ -4,20 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Actions\Machine\AddRemoteCredit;
 use App\Actions\Machine\GetAllMachines;
-use App\Actions\Machine\GetPayments;
-use App\Actions\Machine\GetPaymentsByPeriod;
-use App\Actions\Machine\RemovePayments;
 use App\Actions\Machine\RemoveSelectedPayments;
 use App\Actions\Machine\UpdateMachine;
+use App\Actions\Payment\GetPayments;
+use App\Actions\Payment\GetPaymentsByPeriod;
+use App\Actions\Payment\RemovePayments;
 use App\Actions\Report\PaymentsCashReport;
 use App\Actions\Report\PaymentsPDFReport;
 use App\Actions\Report\PaymentsRefundsReport;
 use App\Actions\Report\PaymentsReport;
 use App\Actions\Report\PaymentsTaxReport;
 use App\Helpers\CustomerHelper;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
 
