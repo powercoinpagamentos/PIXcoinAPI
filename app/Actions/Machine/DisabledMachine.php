@@ -3,6 +3,7 @@
 namespace App\Actions\Machine;
 
 use App\Models\Cliente;
+use App\Services\EmailService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
@@ -27,6 +28,12 @@ readonly class DisabledMachine
             $disabled = !$cliente->maquinas()->first()->disabled;
 
             $cliente->maquinas()->update(['disabled' => $disabled]);
+
+            if ($disabled) {
+                (new EmailService())->sendDisabledMachineEmail('suvilao@gmail.com', 'Fulano de tal');
+            } else {
+                (new EmailService())->sendEnableMachineEmail('suvilao@gmail.com', 'Fulano de tal');
+            }
 
             return [
                 'message' => 'Todas as máquinas foram ' . ($disabled ? 'desabilitadas' : 'habilitadas'),
