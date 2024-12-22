@@ -42,7 +42,7 @@ readonly class CustomerLogin
             'type' => 'pessoa',
             'key' => 'CLIENT',
             'ativo' => (bool)$customer->ativo,
-            'vencimento' => $customer->data_vencimento
+            'vencimento' => $customer->dataVencimento
         ]);
     }
 

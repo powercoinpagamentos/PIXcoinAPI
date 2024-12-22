@@ -14,6 +14,7 @@ Route::post('/relatorio-03-pagamentos-adm', [AdminController::class, 'paymentsRe
 Route::post('/relatorio-04-estornos-adm', [AdminController::class, 'paymentsRefundsReport']);
 Route::put('/maquina', [AdminController::class, 'updateMachine']);
 Route::post('/credito-remoto-cliente', [AdminController::class, 'addRemoteCreditOnMachine']);
+Route::get('/clientes', [AdminController::class, 'allCustomers']);
 
 Route::post('/login-cliente', [CustomerController::class, 'login']);
 

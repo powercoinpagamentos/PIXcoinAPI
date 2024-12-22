@@ -24,7 +24,7 @@ return new class extends Migration
             $table->timestamp('data_inclusao')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('ultimo_acesso')->nullable();
             $table->boolean('ativo')->default(true);
-            $table->timestamp('data_vencimento')->nullable();
+            $table->timestamp('dataVencimento')->nullable();
             $table->foreign('pessoa_id')->references('id')->on('pessoas');
             $table->timestamps();
         });

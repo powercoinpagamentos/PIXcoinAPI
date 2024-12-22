@@ -33,7 +33,7 @@ class Cliente extends Model
         'data_inclusao',
         'ultimo_acesso',
         'ativo',
-        'data_vencimento',
+        'dataVencimento',
     ];
 
     public function pessoa(): BelongsTo
