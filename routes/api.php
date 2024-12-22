@@ -13,8 +13,9 @@ Route::post('/relatorio-02-taxas-adm', [AdminController::class, 'paymentsTaxRepo
 Route::post('/relatorio-03-pagamentos-adm', [AdminController::class, 'paymentsReport']);
 Route::post('/relatorio-04-estornos-adm', [AdminController::class, 'paymentsRefundsReport']);
 Route::put('/maquina', [AdminController::class, 'updateMachine']);
-Route::post('/credito-remoto-cliente', [AdminController::class, 'addRemoteCreditOnMachine']);
+Route::post('/credito-remoto', [AdminController::class, 'addRemoteCreditOnMachine']);
 Route::get('/clientes', [AdminController::class, 'allCustomers']);
+Route::get('/cliente', [AdminController::class, 'getCustomer']);
 
 Route::post('/login-cliente', [CustomerController::class, 'login']);
 
