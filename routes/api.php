@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\MachineController;
+use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/login-pessoa', [AdminController::class, 'login']);
@@ -38,3 +39,5 @@ Route::post('/relatorio-03-pagamentos', [MachineController::class, 'paymentsRepo
 Route::post('/relatorio-04-estornos', [MachineController::class, 'paymentsRefundsReport']);
 Route::post('/relatorio-pagamento-pdf', [MachineController::class, 'paymentsReportPDF']);
 Route::get('/consultar-maquina/{machineId}', [MachineController::class, 'consultMachine']);
+
+Route::post('/rota-recebimento-mercado-pago-dinamica/{id}', [PaymentController::class, 'receiptPayment']);
