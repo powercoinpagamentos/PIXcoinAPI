@@ -5,7 +5,7 @@ namespace App\Actions\Customer;
 use App\Models\Cliente;
 use Illuminate\Http\JsonResponse;
 
-class CreateCustomer
+readonly class CreateCustomer
 {
     public function __construct(private array $data)
     {
@@ -18,8 +18,8 @@ class CreateCustomer
         return response()->json(['message' => 'Cliente criado com sucesso!']);
     }
 
-    private function createCustomer()
+    private function createCustomer(): void
     {
-        return Cliente::create($this->data);
+        Cliente::create($this->data);
     }
 }

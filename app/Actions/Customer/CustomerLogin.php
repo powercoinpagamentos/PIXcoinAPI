@@ -58,7 +58,7 @@ readonly class CustomerLogin
     }
 
     /**
-     * @throws RandomException|DateMalformedStringException
+     * @throws RandomException|\DateMalformedStringException
      */
     private function generateJWT(string $userId): string
     {
