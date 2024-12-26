@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Services\Discord;
 use App\Services\Interfaces\IDiscord;
+use App\Services\Interfaces\IPayment;
+use App\Services\PaymentService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -27,6 +29,10 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->singleton(IDiscord::class, function () {
             return new Discord();
+        });
+
+        $this->app->singleton(IPayment::class, function () {
+            return new PaymentService();
         });
     }
 }
