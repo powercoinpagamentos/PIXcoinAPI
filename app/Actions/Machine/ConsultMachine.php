@@ -24,7 +24,7 @@ readonly class ConsultMachine
             $pulso = $this->convertPixValue($machine->valor_do_pix, $machine->valorDoPulso);
 
             if ($machine->tempoDoPulso !== null && $machine->tempoDoPulso > 0) {
-                usleep($machine->tempoDoPulso * 1000);
+                sleep($machine->tempoDoPulso);
             }
         }
 
