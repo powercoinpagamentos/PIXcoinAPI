@@ -28,7 +28,7 @@ class Cliente extends Model
         'senha',
         'mercado_pago_token',
         'pagbank_email',
-        'pagbank_token',
+        'pagbankToken',
         'pessoa_id',
         'data_inclusao',
         'ultimo_acesso',
