@@ -237,6 +237,8 @@ class AdminController extends Controller
         $data = [
             'nome' => $request->get('nome'),
             'dataVencimento' => Carbon::parse($request->get('dataVencimento')),
+            'pagbankToken' => Carbon::parse($request->get('pagbankToken')),
+            'mercado_pago_token' => Carbon::parse($request->get('mercadoPagoToken')),
         ];
         return (new UpdateCustomer($customerId, $data))->run();
     }
