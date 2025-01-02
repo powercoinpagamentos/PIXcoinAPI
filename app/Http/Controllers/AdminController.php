@@ -253,6 +253,7 @@ class AdminController extends Controller
             'nome' => $request->get('nome'),
             'dataVencimento' => Carbon::parse($request->get('dataVencimento')),
             'mercado_pago_token' => $request->get('mercadoPagoToken'),
+            'pagbank_token' => $request->get('pagbankToken'),
             'email' => $request->get('email'),
             'senha' => Hash::make($request->get('senha')),
             'pessoa_id' => $userId
