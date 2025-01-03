@@ -175,6 +175,7 @@ class AdminController extends Controller
             'valorDoPulso' => $request->get('valorDoPulso'),
             'cliente_id' => $request->get('clienteId'),
             'valor_do_pix' => '0',
+            'maquininha_serial' => $request->get('maquininha_serial'),
         ];
 
         return (new CreateMachine($machineData))->run();
