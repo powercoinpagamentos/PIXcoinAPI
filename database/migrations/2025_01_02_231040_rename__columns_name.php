@@ -24,6 +24,7 @@ return new class extends Migration
     {
         Schema::table('clientes', function (Blueprint $table) {
             $table->renameColumn('pagbankEmail', 'pagbank_email');
+            $table->renameColumn('mercadoPagoToken', 'mercado_pago_token');
         });
     }
 };
