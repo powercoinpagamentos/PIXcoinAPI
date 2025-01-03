@@ -31,7 +31,7 @@ readonly class ReceiptPayment
             return response()->json(['error' => 'Cliente não encontrado'], 404);
         }
 
-        $payment = $this->getPaymentsFromMP($customer->mercado_pago_token);
+        $payment = $this->getPaymentsFromMP($customer->mercadoPagoToken);
 
         $storeId = $payment['store_id'] ?? '';
         $value = $payment['transaction_amount'] ?? '';
@@ -42,7 +42,7 @@ readonly class ReceiptPayment
 
         if (!$machine || $machine->disabled) {
             return $this->reversal(
-                $customer->mercado_pago_token,
+                $customer->mercadoPagoToken,
                 $machine->id ?? '',
                 $value,
                 $paymentType,
@@ -52,7 +52,7 @@ readonly class ReceiptPayment
 
         if ($this->machineOffline($machine)) {
             return $this->reversal(
-                $customer->mercado_pago_token,
+                $customer->mercadoPagoToken,
                 $machine->id ?? '',
                 $value,
                 $paymentType,
@@ -62,7 +62,7 @@ readonly class ReceiptPayment
 
         if ($this->lesserThanMinTicket($value, $machine->valorDoPulso)) {
             return $this->reversal(
-                $customer->mercado_pago_token,
+                $customer->mercadoPagoToken,
                 $machine->id ?? '',
                 $value,
                 $paymentType,
