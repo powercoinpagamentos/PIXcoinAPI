@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
             CreateAdminUser::class,
             AddTesterCustomer::class,
             CreateTestMachine::class,
-            CreatePaymentTest::class,
+//            CreatePaymentTest::class,
         ]);
     }
 }

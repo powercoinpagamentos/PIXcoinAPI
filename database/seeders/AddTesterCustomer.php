@@ -19,7 +19,7 @@ class AddTesterCustomer extends Seeder
         if (!$cliente) {
             $pessoa = Pessoa::where('email', 'krynevictor0736@gmail.com')->first();
             Cliente::create([
-                'id' => '2a7e1906-0d5f-437e-a456-d8f7d950f654',
+                'id' => '527bb759-c35a-440b-ab44-45a833acd3ac',
                 'nome' => 'Renato',
                 'email' => 'rcbrinq@hotmail.com',
                 'senha' => Hash::make('08825brc'),
