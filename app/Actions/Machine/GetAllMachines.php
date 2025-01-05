@@ -80,6 +80,7 @@ readonly class GetAllMachines
                 'totalEspecie' => $totais['totalEspecie'],
                 'totalComEstorno' => $totais['totalComEstorno'],
                 'disabled' => (bool)$machine->disabled,
+                'tempoDoPulso' => $machine->tempoDoPulso
             ];
         });
     }
