@@ -36,6 +36,8 @@ class Maquina extends Model
         'ultimo_pagamento_recebido',
         'ultima_requisicao',
         'disabled',
+        'tempoHigh',
+        'tempoLow'
     ];
 
     public function pessoa(): BelongsTo
