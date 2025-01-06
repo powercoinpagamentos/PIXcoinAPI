@@ -34,7 +34,7 @@ readonly class ConsultMachine
         return Maquina::query()
             ->where('id', $this->machineId)
             ->where('disabled', false)
-            ->select('valorDoPulso', 'valor_do_pix', 'tempoDoPulso')
+            ->select('valorDoPulso', 'valor_do_pix')
             ->first();
     }
 
