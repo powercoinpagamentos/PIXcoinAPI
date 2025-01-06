@@ -25,7 +25,11 @@ readonly class ReceiptPaymentCash
 
         $this->createPayment();
 
-        return response()->json(['message' => 'Pagamento registrado com sucesso']);
+        return response()->json([
+            'message' => 'Pagamento registrado com sucesso',
+            'tempoLow' => $machine->tempoLow,
+            'tempoHigh' => $machine->tempoHigh,
+        ]);
     }
 
     private function getMachine(): ?Maquina
