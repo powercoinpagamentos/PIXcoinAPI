@@ -42,15 +42,6 @@ readonly class ReceiptPayment
 
         $machine = $this->getMachine($customer, $storeId);
 
-        if ($this->existingPayment() && $paymentStatus !== "approved") {
-            $this->handleTramoia();
-            return response()->json(['error' => 'Tentativa de golpe'], 409);
-        }
-
-        if ($this->existingPayment()) {
-            return response()->json(['error' => 'Esse pagamento já existe na base.'], 409);
-        }
-
         if (!$machine || $machine->disabled) {
             return $this->reversal(
                 $customer->mercadoPagoToken,
@@ -79,6 +70,15 @@ readonly class ReceiptPayment
                 $paymentType,
                 'Valor abaixo do preço da máquina'
             );
+        }
+
+        if ($this->existingPayment() && $paymentStatus !== "approved") {
+            $this->handleTramoia();
+            return response()->json(['error' => 'Tentativa de golpe'], 409);
+        }
+
+        if ($this->existingPayment()) {
+            return response()->json(['error' => 'Esse pagamento já existe na base.'], 409);
         }
 
         try {
