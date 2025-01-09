@@ -3,6 +3,7 @@
 namespace App\Actions\Machine;
 
 use App\Models\Maquina;
+use App\Models\Pagamento;
 use App\Services\Interfaces\IDiscord;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -25,6 +26,8 @@ readonly class AddRemoteCredit
             'ultimo_pagamento_recebido' => now(),
             'valor_do_pix' => $this->value
         ]);
+
+        $this->createPayment($machine->id, $this->value);
 
         $this->notifierDiscord();
 
@@ -71,5 +74,16 @@ readonly class AddRemoteCredit
             "CRÉDITO REMOTO DE R$: $this->value",
             '',
         );
+    }
+
+    private function createPayment(string $machineId, string $value): void
+    {
+        Pagamento::create([
+            'maquina_id' => $machineId,
+            'valor' => $value,
+            'mercadoPagoId' => 'CRÉDITO REMOTO',
+            'tipo' => 'remote_credit',
+            'data' => now()
+        ]);
     }
 }
