@@ -42,14 +42,12 @@ readonly class ReceiptPayment
 
         $machine = $this->getMachine($customer, $storeId);
 
-        $payments = $machine->pagamentos;
-
-        if ($this->existingPayment($payments) && $paymentStatus !== "approved") {
+        if ($this->existingPayment() && $paymentStatus !== "approved") {
             $this->handleTramoia();
             return response()->json(['error' => 'Tentativa de golpe'], 409);
         }
 
-        if ($this->existingPayment($payments)) {
+        if ($this->existingPayment()) {
             return response()->json(['error' => 'Esse pagamento já existe na base.'], 409);
         }
 
@@ -205,11 +203,9 @@ readonly class ReceiptPayment
         return $value < $ticketMin;
     }
 
-    private function existingPayment(Collection $payments): bool
+    private function existingPayment(): bool
     {
-        return $payments->contains(function (Pagamento $pagamento) {
-            return $pagamento->mercadoPagoId === $this->mercadoPagoId;
-        });
+        return Pagamento::where('mercadoPagoId', $this->mercadoPagoId)->exists();
     }
 
     private function handleTramoia(): void
