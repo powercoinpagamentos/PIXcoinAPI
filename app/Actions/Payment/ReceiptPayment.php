@@ -207,7 +207,7 @@ readonly class ReceiptPayment
 
     private function existingPayment(Collection $payments): bool
     {
-        return $payments->some(function (Pagamento $pagamento) {
+        return $payments->contains(function (Pagamento $pagamento) {
             return $pagamento->mercadoPagoId === $this->mercadoPagoId;
         });
     }
