@@ -27,7 +27,7 @@ readonly class AddRemoteCredit
             'valor_do_pix' => $this->value
         ]);
 
-        $this->createPayment($machine->id, $this->value);
+        $this->createPayment($machine->id, $this->value, $machine->cliente_id);
 
         $this->notifierDiscord();
 
@@ -76,14 +76,16 @@ readonly class AddRemoteCredit
         );
     }
 
-    private function createPayment(string $machineId, string $value): void
+    private function createPayment(string $machineId, string $value, string $clientId): void
     {
         Pagamento::create([
             'maquina_id' => $machineId,
             'valor' => $value,
             'mercadoPagoId' => 'CRÉDITO REMOTO',
             'tipo' => 'remote_credit',
-            'data' => now()
+            'data' => now(),
+            'estornado' => false,
+            'cliente_id' => $clientId
         ]);
     }
 }
