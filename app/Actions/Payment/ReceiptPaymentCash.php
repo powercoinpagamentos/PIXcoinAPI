@@ -44,7 +44,8 @@ readonly class ReceiptPaymentCash
             'valor' => $this->value,
             'mercadoPagoId' => 'CASH',
             'tipo' => 'CASH',
-            'data' => now()
+            'data' => now(),
+            'estornado' => false,
         ]);
     }
 }
