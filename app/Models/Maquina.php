@@ -52,6 +52,6 @@ class Maquina extends Model
 
     public function pagamentos(): HasMany
     {
-        return $this->hasMany(Pagamento::class, 'maquina_id');
+        return $this->hasMany(Pagamento::class, 'maquina_id')->orderBy('created_at', 'desc');
     }
 }
