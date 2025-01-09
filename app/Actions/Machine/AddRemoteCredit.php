@@ -49,7 +49,7 @@ readonly class AddRemoteCredit
 
             $status = $tempoDesdeUltimaRequisicao > 5 ? 'OFFLINE' : 'ONLINE';
 
-            if ($status === 'ONLINE' && $tempoDesdeUltimoPagamento < 1000) {
+            if ($status === 'ONLINE' && $tempoDesdeUltimoPagamento < 1800) {
                 $status = 'PAGAMENTO_RECENTE';
             }
 
