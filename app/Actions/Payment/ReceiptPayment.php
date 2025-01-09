@@ -10,6 +10,7 @@ use App\Services\Interfaces\IPayment;
 use Carbon\Carbon;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -33,6 +34,7 @@ readonly class ReceiptPayment
 
         $payment = $this->getPaymentsFromMP($customer->mercadoPagoToken);
 
+        $paymentStatus = $payment['status'] ?? '';
         $storeId = $payment['store_id'] ?? '';
         $value = $payment['transaction_amount'] ?? '';
         $paymentType = $payment['payment_type_id'] ?? '';
@@ -40,7 +42,14 @@ readonly class ReceiptPayment
 
         $machine = $this->getMachine($customer, $storeId);
 
-        if ($this->existingPayment($machine)) {
+        $payments = $machine->pagamentos;
+
+        if ($this->existingPayment($payments) && $paymentStatus !== "approved") {
+            $this->handleTramoia();
+            return response()->json(['error' => 'Tentativa de golpe'], 409);
+        }
+
+        if ($this->existingPayment($payments)) {
             return response()->json(['error' => 'Esse pagamento já existe na base.'], 409);
         }
 
@@ -196,11 +205,20 @@ readonly class ReceiptPayment
         return $value < $ticketMin;
     }
 
-    private function existingPayment(Maquina $machine): bool
+    private function existingPayment(Collection $payments): bool
     {
-        return $machine->pagamentos->some(function (Pagamento $pagamento) {
+        return $payments->some(function (Pagamento $pagamento) {
             return $pagamento->mercadoPagoId === $this->mercadoPagoId;
         });
+    }
+
+    private function handleTramoia(): void
+    {
+        Pagamento::where('mercadoPagoId', $this->mercadoPagoId)
+            ->update([
+                'motivo_estorno' => 'Tentativa de Golpe',
+                'estornado' => true,
+            ]);
     }
 
     private function notifierDiscord(
