@@ -40,6 +40,10 @@ readonly class ReceiptPayment
 
         $machine = $this->getMachine($customer, $storeId);
 
+        if ($this->existingPayment($machine)) {
+            return response()->json(['error' => 'Esse pagamento já existe na base.'], 409);
+        }
+
         if (!$machine || $machine->disabled) {
             return $this->reversal(
                 $customer->mercadoPagoToken,
@@ -114,7 +118,7 @@ readonly class ReceiptPayment
 
     private function getMachine(Cliente $customer, string $storeId): ?Maquina
     {
-        return $customer->maquinas->first(function(Maquina $maquina) use ($storeId) {
+        return$customer->maquinas()->with('pagamentos')->get()->first(function(Maquina $maquina) use ($storeId) {
             return $maquina->store_id === $storeId;
         });
     }
@@ -190,6 +194,13 @@ readonly class ReceiptPayment
     private function lesserThanMinTicket(float $value, float $ticketMin): bool
     {
         return $value < $ticketMin;
+    }
+
+    private function existingPayment(Maquina $machine): bool
+    {
+        return $machine->pagamentos->some(function (Pagamento $pagamento) {
+            return $pagamento->mercadoPagoId === $this->mercadoPagoId;
+        });
     }
 
     private function notifierDiscord(
