@@ -10,7 +10,6 @@ use App\Services\Interfaces\IPayment;
 use Carbon\Carbon;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -34,7 +33,6 @@ readonly class ReceiptPayment
 
         $payment = $this->getPaymentsFromMP($customer->mercadoPagoToken);
 
-        $paymentStatus = $payment['status'] ?? '';
         $storeId = $payment['store_id'] ?? '';
         $value = $payment['transaction_amount'] ?? '';
         $paymentType = $payment['payment_type_id'] ?? '';
@@ -72,12 +70,7 @@ readonly class ReceiptPayment
             );
         }
 
-        if ($this->existingPayment() && $paymentStatus !== "approved") {
-            $this->handleTramoia();
-            return response()->json(['error' => 'Tentativa de golpe'], 409);
-        }
-
-        if ($this->existingPayment()) {
+        if ($this->existingPayment($machine)) {
             return response()->json(['error' => 'Esse pagamento já existe na base.'], 409);
         }
 
@@ -125,7 +118,7 @@ readonly class ReceiptPayment
 
     private function getMachine(Cliente $customer, string $storeId): ?Maquina
     {
-        return$customer->maquinas()->with('pagamentos')->get()->first(function(Maquina $maquina) use ($storeId) {
+        return $customer->maquinas()->with('pagamentos')->get()->first(function(Maquina $maquina) use ($storeId) {
             return $maquina->store_id === $storeId;
         });
     }
@@ -203,9 +196,11 @@ readonly class ReceiptPayment
         return $value < $ticketMin;
     }
 
-    private function existingPayment(): bool
+    private function existingPayment(Maquina $machine): bool
     {
-        return Pagamento::where('mercadoPagoId', $this->mercadoPagoId)->exists();
+        return $machine->pagamentos->contains(function ($pagamento) {
+            return $pagamento->mercadoPagoId === $this->mercadoPagoId;
+        });
     }
 
     private function handleTramoia(): void
