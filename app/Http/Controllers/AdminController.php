@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\Admin\AdminLogin;
 use App\Actions\Customer\CreateCustomer;
+use App\Actions\Customer\DeleteCustomer;
 use App\Actions\Customer\GetAllCustomers;
 use App\Actions\Customer\GetCustomer;
 use App\Actions\Customer\UpdateCustomer;
@@ -265,5 +266,16 @@ class AdminController extends Controller
         ];
 
         return (new CreateCustomer($data))->run();
+    }
+
+    public function deleteCustomer(Request $request, string $id): JsonResponse
+    {
+        $token = $request->header('x-access-token');
+        $userId = (new AdminHelper())->validateAdminToken($token);
+        if (!$userId) {
+            return response()->json(['error' => 'Usuário sem autorização.'], 401);
+        }
+
+        return (new DeleteCustomer($id))->run();
     }
 }
