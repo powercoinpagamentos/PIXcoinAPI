@@ -26,6 +26,11 @@ readonly class ReceiptPayment
      */
     public function run(): JsonResponse
     {
+        // BY-PASS para validação do MP
+        if ($this->mercadoPagoId === '123456') {
+            return response()->json(['status', 'ok']);
+        }
+
         $customer = $this->getCustomer();
         if (!$customer) {
             return response()->json(['error' => 'Cliente não encontrado'], 404);
