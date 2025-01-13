@@ -24,6 +24,7 @@ readonly class DeleteCustomer
         DB::transaction(function () {
             $cliente = Cliente::find($this->id);
             $cliente->pagamentos()->delete();
+            $cliente->maquinas()->delete();
             $cliente->delete();
         });
     }
