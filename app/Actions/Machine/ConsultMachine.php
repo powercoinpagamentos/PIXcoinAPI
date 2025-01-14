@@ -26,7 +26,11 @@ readonly class ConsultMachine
 
         $this->updateMachine();
 
-        return response()->json(['retorno' => $pulso]);
+        return response()->json([
+            'retorno' => $pulso,
+            'tempoLow' => $machine->tempoLow,
+            'tempoHigh' => $machine->tempoHigh,
+        ]);
     }
 
     private function getMachine(): ?Maquina
