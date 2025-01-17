@@ -66,6 +66,7 @@ readonly class PaymentsPDFReport
             'debit_card' => 'Débito',
             'credit_card' => 'Crédito',
             'account_money' => '',
+            'remote_credit' => 'Crédito Remoto'
         ];
 
         return $paymentFormMap[$currentPaymentForm] ?? '';
