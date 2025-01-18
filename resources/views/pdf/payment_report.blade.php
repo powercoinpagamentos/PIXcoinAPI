@@ -6,26 +6,41 @@
     <title>Relatório de Pagamentos</title>
     <style>
 
-        img {
-            width: 100%;
-            height: 400px;
-        }
-        body {
-            font-family: Arial, sans-serif;
+        @page {  margin: 0;   }
+
+        body { font-family: Arial, sans-serif; }
+
+        .banner,
+        .table,
+        .footer { padding: 20px; }
+
+        .informs, .content {
+            padding: 0 20px;
         }
 
-        .header {
-            text-align: center;
+        .banner {
+            width: 100%;
+            height: 50px;
+            background-color: #0097b2;
+            position: relative;
+            color: white;
         }
 
         .table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
         }
 
-        .table th, .table td {
-            border: 1px solid #ddd;
+        .table th {
+            background-color: #0097b2;
+            color: white;
+            border: none !important;
+            text-align: left;
+            padding: 10px 5px;
+        }
+
+        .table td {
+            border-bottom: 1px solid #ddd;
             padding: 8px;
             text-align: left;
         }
@@ -33,22 +48,37 @@
         .footer {
             margin-top: 20px;
             text-align: center;
+            width: 100%;
+            height: 50px;
+            background-color: #0097b2;
+            color: white;
+            position: absolute;
+            bottom: 0;
+            left: 0;
         }
     </style>
 </head>
 <body>
-{{--<img src="{{ public_path('img.png') }}" alt="AA">--}}
-<div class="header">
-    <img src="{{ public_path('img.png') }}" alt="AA">
-    <h1>Relatório de Pagamentos</h1>
-    <p>Máquina: {{ $maquinaNome }}</p>
-    <p>{{ Carbon::parse($startDate)->format('d/m/Y') }} - {{ Carbon::parse($endDate)->format('d/m/Y') }}</p>
+
+<div class="banner">
+    <h1 style="margin: 0">Relatório de pagamentos</h1>
+    <h1 style="margin: 0; text-align: right; position: absolute; top: 20px; right: 80px;">PIXcoin</h1>
+</div>
+
+<div class="informs">
+    <h2>Informações do cliente e máquina:</h2>
+
+    <h3 style="margin-bottom: 15px; border-bottom: 2px solid #0097b2;">Máquina: {{ $maquinaNome }}</h3>
+    <h3 style="margin-bottom: 15px; border-bottom: 2px solid #0097b2;">Responsável: {{ $clienteNome }}</h3>
+    <h3 style="margin-bottom: 15px; border-bottom: 2px solid #0097b2;">Data: {{ Carbon::parse($startDate)->format('d/m/Y') }} - {{ Carbon::parse($endDate)->format('d/m/Y') }}</h3>
 </div>
 
 <div class="content">
-    <p>Total sem estorno: R$ {{ number_format($totalSemEstorno, 2, ',', '.') }}</p>
-    <p>Total estornado: R$ {{ number_format($totalComEstorno, 2, ',', '.') }}</p>
-    <p>Total em espécie: R$ {{ number_format($totalEspecie, 2, ',', '.') }}</p>
+    <h2>Soma de pagamentos:</h2>
+    <h3  style="margin-bottom: 15px; border-bottom: 2px solid #0097b2;">Soma total entre Pix, Débito, Crédito e Crédito Remoto: R$ {{ number_format($totalSemEstorno - $totalEspecie, 2, ',', '.') }}</h3>
+    <h3  style="margin-bottom: 15px; border-bottom: 2px solid #0097b2;">Soma total de Espécie: R$ {{ number_format($totalEspecie, 2, ',', '.') }}</h3>
+    <h3  style="margin-bottom: 15px; border-bottom: 2px solid #0097b2;">Soma total entre Espécie, Pix, Débito, Crédito e Crédito Remoto: R$ {{ number_format($totalSemEstorno, 2, ',', '.') }}</h3>
+    <h3  style="margin-bottom: 15px; border-bottom: 2px solid #0097b2;">Soma total de estornos em Pix, Débito e Crédito: R$ {{ number_format($totalComEstorno, 2, ',', '.') }}</h3>
 </div>
 
 <table class="table">
@@ -71,7 +101,7 @@
 </table>
 
 <div class="footer">
-    <p>Relatório gerado automaticamente.</p>
+    <h3>Todos os direitos reservados &copy; PIXcoin 2025</h3>
 </div>
 </body>
 </html>

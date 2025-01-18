@@ -22,7 +22,7 @@ readonly class PaymentsPDFReport
         $endDate = Carbon::parse($this->endDate)->endOfDay();
 
         $maquina = Maquina::query()
-            ->with('pagamentos')
+            ->with(['pagamentos', 'cliente'])
             ->find($this->machineId);
 
         $payments = $maquina->pagamentos
@@ -43,9 +43,11 @@ readonly class PaymentsPDFReport
 
         return [
             'maquinaNome' => $maquina->nome,
+            'clienteNome' => $maquina->cliente->nome,
             'totalSemEstorno' => $totalPayments['totalSemEstorno'],
             'totalComEstorno' => $totalPayments['totalComEstorno'],
             'totalEspecie' => $totalPayments['totalEspecie'],
+            'totalCreditoRemoto' => $totalPayments['totalCreditoRemoto'],
             'tableArray' => $tableArray,
             'startDate' => $startDate,
             'endDate' => $endDate

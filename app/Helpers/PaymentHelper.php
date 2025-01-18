@@ -16,6 +16,7 @@ class PaymentHelper
             'totalSemEstorno' => 0,
             'totalComEstorno' => 0,
             'totalEspecie' => 0,
+            'totalCreditoRemoto' => 0
         ];
 
         foreach ($paymentsFromMachine as $payment) {
@@ -29,6 +30,10 @@ class PaymentHelper
 
             if ($payment->mercadoPagoId === 'CASH') {
                 $totais['totalEspecie'] += $valor;
+            }
+
+            if($payment->mercadoPagoId === 'CRÉDITO REMOTO') {
+                $totais['totalCreditoRemoto'] += $valor;
             }
         }
 
