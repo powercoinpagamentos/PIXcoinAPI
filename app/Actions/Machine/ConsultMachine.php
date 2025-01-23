@@ -52,13 +52,13 @@ readonly class ConsultMachine
         ]);
     }
 
-    private function convertPixValue(float $valorPix, float $valorDoPulso): string
+    private function convertPixValue(float|string $valorPix, float $valorDoPulso): string
     {
-        if ($valorPix <= 0 || $valorDoPulso <= 0 || $valorPix < $valorDoPulso) {
+        if ((float)$valorPix <= 0 || $valorDoPulso <= 0 || (float)$valorPix < $valorDoPulso) {
             return "0000";
         }
 
-        $credits = floor($valorPix / $valorDoPulso);
+        $credits = floor((float)$valorPix / $valorDoPulso);
         return str_pad((string) $credits, 4, "0", STR_PAD_LEFT);
     }
 }
