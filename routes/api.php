@@ -44,3 +44,4 @@ Route::get('/consultar-maquina/{machineId}', [MachineController::class, 'consult
 Route::post('/rota-recebimento-mercado-pago-dinamica/{id}', [PaymentController::class, 'receiptPayment']);
 Route::post('/rota-recebimento-especie/{id}', [PaymentController::class, 'receiptPaymentCash']);
 Route::post('/webhookmercadopago/{id}', [PaymentController::class, 'testMercadoPago']);
+Route::post('/webhookpagbank/{clientId}', [PaymentController::class, 'receiptPaymentFromPagBank']);

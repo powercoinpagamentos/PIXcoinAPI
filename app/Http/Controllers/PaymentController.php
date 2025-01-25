@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\Payment\ReceiptPayment;
 use App\Actions\Payment\ReceiptPaymentCash;
+use App\Actions\Payment\ReceiptPaymentFromPagBank;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -32,5 +33,13 @@ class PaymentController
         }
 
         return response()->json(['error' => 'Parâmetros inválidos'], 400);
+    }
+
+    public function receiptPaymentFromPagBank(Request $request, string $clientId): JsonResponse
+    {
+        $notificationType = $request->get('notificationType');
+        $notificationCode = $request->get('notificationCode');
+
+        return (new ReceiptPaymentFromPagBank($clientId, $notificationType, $notificationCode))->run();
     }
 }

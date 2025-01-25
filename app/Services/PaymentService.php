@@ -50,4 +50,28 @@ class PaymentService implements IPayment
         $body = $response->getBody();
         return json_decode($body, true);
     }
+
+    /**
+     * @throws GuzzleException
+     */
+    public function getPaymentFromPagBank(string $notificationCode, string $clientEmail, string $clientToken)
+    {
+        $client = new Client([
+            'verify' => false,
+        ]);
+
+        $uri = env('PAGSEGURO_API_URL');
+        $completeURI = "$uri/$notificationCode?email=$clientEmail&token=$clientToken";
+
+        $response = $client->request('GET', $completeURI, [
+            'headers' => [
+                'content-type' => 'application/json',
+            ],
+        ]);
+
+        $data = json_decode($response->getBody(), true);
+        file_put_contents(storage_path('pagseguro_respostas.txt'), json_encode($data) . PHP_EOL, FILE_APPEND);
+
+        return $data;
+    }
 }
