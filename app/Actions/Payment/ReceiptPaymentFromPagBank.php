@@ -11,8 +11,7 @@ class ReceiptPaymentFromPagBank
 {
     public function __construct(
         private string $clientId,
-        private string $notificationType,
-        private string|int $notificationCode
+        private readonly string|int $notificationCode
     )
     {
     }

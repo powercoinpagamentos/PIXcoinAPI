@@ -37,9 +37,8 @@ class PaymentController
 
     public function receiptPaymentFromPagBank(Request $request, string $clientId): JsonResponse
     {
-        $notificationType = $request->get('notificationType');
         $notificationCode = $request->get('notificationCode');
 
-        return (new ReceiptPaymentFromPagBank($clientId, $notificationType, $notificationCode))->run();
+        return (new ReceiptPaymentFromPagBank($clientId, $notificationCode))->run();
     }
 }
