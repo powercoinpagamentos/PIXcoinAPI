@@ -24,4 +24,13 @@ class PaymentController
         $value = $request->query('valor');
         return (new ReceiptPaymentCash($machineId, $value))->run();
     }
+
+    public function testMercadoPago(Request $request): JsonResponse
+    {
+        if ($request->query('data_id') === '123456' && $request->query('type') === 'payment') {
+            return response()->json(['status' => 'ok']);
+        }
+
+        return response()->json(['error' => 'Parâmetros inválidos'], 400);
+    }
 }
