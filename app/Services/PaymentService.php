@@ -63,6 +63,7 @@ class PaymentService implements IPayment
         $uri = env('PAGSEGURO_API_URL');
         $completeURI = "$uri/$notificationCode?email=$clientEmail&token=$clientToken";
 
+        file_put_contents(storage_path('antes.txt'), "ANTES DO REQUEST", FILE_APPEND);
         $response = $client->request('GET', $completeURI, [
             'headers' => [
                 'content-type' => 'application/json',
@@ -70,7 +71,7 @@ class PaymentService implements IPayment
         ]);
 
         $data = json_decode($response->getBody(), true);
-        file_put_contents(storage_path('pagseguro_respostas.txt'), json_encode($data) . PHP_EOL, FILE_APPEND);
+        file_put_contents(storage_path('pagseguro_respostas.txt'), $response->getBody(), FILE_APPEND);
 
         return $data;
     }
