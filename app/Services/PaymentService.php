@@ -54,7 +54,7 @@ class PaymentService implements IPayment
     /**
      * @throws GuzzleException
      */
-    public function getPaymentFromPagBank(string $notificationCode, string $clientEmail, string $clientToken)
+    public function getPaymentFromPagBank(string $notificationCode, string $clientEmail, string $clientToken): array
     {
         $client = new Client([
             'verify' => false,
@@ -63,16 +63,15 @@ class PaymentService implements IPayment
         $uri = env('PAGSEGURO_API_URL');
         $completeURI = "$uri/$notificationCode?email=$clientEmail&token=$clientToken";
 
-        file_put_contents(storage_path('antes.txt'), "ANTES DO REQUEST", FILE_APPEND);
         $response = $client->request('GET', $completeURI, [
             'headers' => [
                 'content-type' => 'application/json',
             ],
         ]);
 
-        $data = json_decode($response->getBody(), true);
-        file_put_contents(storage_path('pagseguro_respostas.txt'), $response->getBody(), FILE_APPEND);
+        $xmlContent = $response->getBody();
+        $xmlObject = simplexml_load_string($xmlContent);
 
-        return $data;
+        return json_decode(json_encode($xmlObject), true);
     }
 }
