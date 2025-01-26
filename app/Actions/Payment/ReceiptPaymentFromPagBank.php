@@ -13,7 +13,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class ReceiptPaymentFromPagBank
+readonly class ReceiptPaymentFromPagBank
 {
     private IPayment $paymentService;
 
@@ -88,7 +88,14 @@ class ReceiptPaymentFromPagBank
         }
 
         try {
-            DB::transaction(function () use ($machine, $value, $paymentType, $operationTax, $client, $transactionCode) {
+            DB::transaction(function () use (
+                $machine,
+                $value,
+                $paymentType,
+                $operationTax,
+                $client,
+                $transactionCode
+            ) {
                 $this->createPayment(
                     $machine->id,
                     $value,
