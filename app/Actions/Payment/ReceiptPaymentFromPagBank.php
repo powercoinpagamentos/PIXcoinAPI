@@ -19,7 +19,7 @@ readonly class ReceiptPaymentFromPagBank
 
     public function __construct(
         private string $clientId,
-        private readonly string|int $notificationCode
+        private string|int $notificationCode
     )
     {
         $this->paymentService = resolve(IPayment::class);
