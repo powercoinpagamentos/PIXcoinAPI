@@ -35,6 +35,9 @@ class PaymentController
         return response()->json(['error' => 'Parâmetros inválidos'], 400);
     }
 
+    /**
+     * @throws GuzzleException
+     */
     public function receiptPaymentFromPagBank(Request $request, string $clientId): JsonResponse
     {
         $notificationCode = $request->get('notificationCode');
