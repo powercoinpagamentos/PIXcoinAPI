@@ -74,4 +74,28 @@ class PaymentService implements IPayment
 
         return json_decode(json_encode($xmlObject), true);
     }
+
+    /**
+     * @throws GuzzleException
+     */
+    public function reversePaymentFromPagBank(string $email, string $token, string $operationId)
+    {
+        $client = new Client([
+            'verify' => false,
+        ]);
+
+        $response = $client->post('https://ws.pagseguro.uol.com.br/v2/transactions/refunds', [
+            'form_params' => [
+                'email' => $email,
+                'token' => $token,
+                'transactionCode' => $operationId,
+            ],
+            'headers' => [
+                'Content-Type' => 'application/x-www-form-urlencoded',
+            ],
+        ]);
+
+        $body = $response->getBody();
+        return json_decode($body, true);
+    }
 }
