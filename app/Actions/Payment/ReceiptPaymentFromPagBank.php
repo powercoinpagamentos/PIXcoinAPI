@@ -216,7 +216,8 @@ readonly class ReceiptPaymentFromPagBank
     {
         $map = [
             '8' => 'debit_card',
-            '1' => 'credit_card'
+            '1' => 'credit_card',
+            '11' => 'bank_transfer'
         ];
 
         return $map[$paymentTypeId] ?? '';
