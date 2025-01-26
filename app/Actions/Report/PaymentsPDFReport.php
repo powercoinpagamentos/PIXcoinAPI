@@ -50,7 +50,9 @@ readonly class PaymentsPDFReport
             'totalCreditoRemoto' => $totalPayments['totalCreditoRemoto'],
             'tableArray' => $tableArray,
             'startDate' => $startDate,
-            'endDate' => $endDate
+            'endDate' => $endDate,
+            'hasPagBank' => $totalPayments['hasPagBank'],
+            'pagBankTotais' => $totalPayments['pagBankTotais'],
         ];
     }
 
@@ -85,6 +87,14 @@ readonly class PaymentsPDFReport
         return $reversed ? 'Estornado' : 'Recebido';
     }
 
+    private function handleIdentifierMP(string $identifier): string {
+        if (strlen($identifier) >= 36) {
+            return 'PagSeguro-' . substr($identifier, 0, 8);
+        }
+        return $identifier;
+    }
+
+
     private function transformPaymentsData(array $payments): array
     {
         return array_map(function ($payment) {
@@ -92,7 +102,7 @@ readonly class PaymentsPDFReport
                 'date' => $this->retrieveFormattedDate($payment['data']),
                 'paymentForm' => $this->retrievePaymentForm($payment['tipo']),
                 'value' => $this->formatToBRL($payment['valor']),
-                'identifierMP' => $payment['mercadoPagoId'],
+                'identifierMP' => $this->handleIdentifierMP($payment['mercadoPagoId']),
                 'reversed' => $this->retrieveReversedText($payment['estornado']),
             ];
         }, $payments);
