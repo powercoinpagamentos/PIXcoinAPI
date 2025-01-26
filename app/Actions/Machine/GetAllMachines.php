@@ -61,6 +61,10 @@ readonly class GetAllMachines
 
             $totais = (new PaymentHelper())->getTotalPayments($pagamentosDaMaquina);
 
+            $pagBankTotais = $totais['pagBankTotais'];
+            $totalSemEstorno = empty($pagBankTotais) ? $totais['totalSemEstorno'] : $totais['totalSemEstorno'] + $pagBankTotais['totalSemEstorno'];
+            $totalComEstorno = empty($pagBankTotais) ? $totais['totalComEstorno'] : $totais['totalComEstorno'] + $pagBankTotais['totalComEstorno'];
+
             return [
                 'id' => $machine->id,
                 'pessoa_id' => $machine->pessoa_id,
@@ -76,9 +80,9 @@ readonly class GetAllMachines
                 'ultima_requisicao' => $machine->ultima_requisicao,
                 'status' => $status,
                 'pulso' => $machine->valorDoPulso,
-                'totalSemEstorno' => $totais['totalSemEstorno'],
+                'totalSemEstorno' => $totalSemEstorno,
                 'totalEspecie' => $totais['totalEspecie'],
-                'totalComEstorno' => $totais['totalComEstorno'],
+                'totalComEstorno' => $totalComEstorno,
                 'disabled' => (bool)$machine->disabled,
                 'tempoLow' => $machine->tempoLow,
                 'tempoHigh' => $machine->tempoHigh,
