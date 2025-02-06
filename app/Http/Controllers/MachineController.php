@@ -8,6 +8,7 @@ use App\Actions\Machine\CreateLittleMachine;
 use App\Actions\Machine\DeleteLittleMachine;
 use App\Actions\Machine\GetAllMachines;
 use App\Actions\Machine\GetLittleMachine;
+use App\Actions\Machine\MachineIsOnline;
 use App\Actions\Machine\RemoveSelectedPayments;
 use App\Actions\Machine\UpdateLittleMachine;
 use App\Actions\Machine\UpdateMachine;
@@ -179,6 +180,11 @@ class MachineController extends Controller
         $pdf = PDF::loadView('pdf.payment_report', $data);
 
         return $pdf->download('relatorio_pagamentos.pdf');
+    }
+
+    public function isOnline(Request $request, string $machineId): JsonResponse
+    {
+        return (new MachineIsOnline($machineId))->run();
     }
 
     public function consultMachine(Request $request, string $machineId): JsonResponse
