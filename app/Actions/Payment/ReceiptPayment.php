@@ -38,6 +38,10 @@ readonly class ReceiptPayment
 
         $payment = $this->getPaymentsFromMP($customer->mercadoPagoToken);
 
+        if ($payment['status'] === 'pending') {
+            return new JsonResponse(['message' => "Pagamento ainda não realizado", 'pago' => false]);
+        }
+
         $externalReference = isset($payment['external_reference']) ? (string) $payment['external_reference'] : "";
 
         $storeId = $payment['store_id'] ?? '';
