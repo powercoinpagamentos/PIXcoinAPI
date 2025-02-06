@@ -8,6 +8,7 @@ use App\Actions\Machine\CreateLittleMachine;
 use App\Actions\Machine\GetAllMachines;
 use App\Actions\Machine\GetLittleMachine;
 use App\Actions\Machine\RemoveSelectedPayments;
+use App\Actions\Machine\UpdateLittleMachine;
 use App\Actions\Machine\UpdateMachine;
 use App\Actions\Payment\GetPayments;
 use App\Actions\Payment\GetPaymentsByPeriod;
@@ -192,5 +193,10 @@ class MachineController extends Controller
     public function getLittleMachine(Request $request, string $code): JsonResponse
     {
         return (new GetLittleMachine($code))->run();
+    }
+
+    public function updateLittleMachine(Request $request, string $code): JsonResponse
+    {
+        return (new UpdateLittleMachine($request->all(), $code))->run();
     }
 }

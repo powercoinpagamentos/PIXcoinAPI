@@ -42,6 +42,7 @@ Route::post('/relatorio-pagamento-pdf', [MachineController::class, 'paymentsRepo
 Route::get('/consultar-maquina/{machineId}', [MachineController::class, 'consultMachine']);
 Route::post('/inserir-maquininha', [MachineController::class, 'insertLittleMachine']);
 Route::get('/buscar-maquininha/{codigo}', [MachineController::class, 'getLittleMachine']);
+Route::put('/alterar-maquininha/{codigo}', [MachineController::class, 'updateLittleMachine']);
 
 Route::post('/rota-recebimento-mercado-pago-dinamica/{id}', [PaymentController::class, 'receiptPayment']);
 Route::post('/rota-recebimento-especie/{id}', [PaymentController::class, 'receiptPaymentCash']);
