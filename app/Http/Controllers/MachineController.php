@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Actions\Machine\AddRemoteCredit;
 use App\Actions\Machine\ConsultMachine;
 use App\Actions\Machine\CreateLittleMachine;
+use App\Actions\Machine\DeleteLittleMachine;
 use App\Actions\Machine\GetAllMachines;
 use App\Actions\Machine\GetLittleMachine;
 use App\Actions\Machine\RemoveSelectedPayments;
@@ -198,5 +199,10 @@ class MachineController extends Controller
     public function updateLittleMachine(Request $request, string $code): JsonResponse
     {
         return (new UpdateLittleMachine($request->all(), $code))->run();
+    }
+
+    public function deleteLittleMachine(Request $request, string $code): JsonResponse
+    {
+        return (new DeleteLittleMachine($code))->run();
     }
 }
