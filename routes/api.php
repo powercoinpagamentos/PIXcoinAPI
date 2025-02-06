@@ -41,6 +41,7 @@ Route::post('/relatorio-04-estornos', [MachineController::class, 'paymentsRefund
 Route::post('/relatorio-pagamento-pdf', [MachineController::class, 'paymentsReportPDF']);
 Route::get('/consultar-maquina/{machineId}', [MachineController::class, 'consultMachine']);
 Route::post('/inserir-maquininha', [MachineController::class, 'insertLittleMachine']);
+Route::get('/buscar-maquininha/{codigo}', [MachineController::class, 'getLittleMachine']);
 
 Route::post('/rota-recebimento-mercado-pago-dinamica/{id}', [PaymentController::class, 'receiptPayment']);
 Route::post('/rota-recebimento-especie/{id}', [PaymentController::class, 'receiptPaymentCash']);

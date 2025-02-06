@@ -6,6 +6,7 @@ use App\Actions\Machine\AddRemoteCredit;
 use App\Actions\Machine\ConsultMachine;
 use App\Actions\Machine\CreateLittleMachine;
 use App\Actions\Machine\GetAllMachines;
+use App\Actions\Machine\GetLittleMachine;
 use App\Actions\Machine\RemoveSelectedPayments;
 use App\Actions\Machine\UpdateMachine;
 use App\Actions\Payment\GetPayments;
@@ -186,5 +187,10 @@ class MachineController extends Controller
     public function insertLittleMachine(Request $request): JsonResponse
     {
         return (new CreateLittleMachine($request->all()))->run();
+    }
+
+    public function getLittleMachine(Request $request, string $code): JsonResponse
+    {
+        return (new GetLittleMachine($code))->run();
     }
 }
