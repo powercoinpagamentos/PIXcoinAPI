@@ -26,6 +26,7 @@ Route::post('/cliente', [AdminController::class, 'createCustomer']);
 Route::delete('/cliente/{id}', [AdminController::class, 'deleteCustomer']);
 
 Route::post('/login-cliente', [CustomerController::class, 'login']);
+Route::get('/is-client-ok/{clientId}', [CustomerController::class, 'clientOk']);
 
 Route::get('/maquinas', [MachineController::class, 'all']);
 Route::put('/maquina-cliente', [MachineController::class, 'update']);
