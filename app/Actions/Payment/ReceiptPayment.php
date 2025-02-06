@@ -38,14 +38,16 @@ readonly class ReceiptPayment
 
         $payment = $this->getPaymentsFromMP($customer->mercadoPagoToken);
 
+        $externalReference = isset($payment['external_reference']) ? (string) $payment['external_reference'] : "";
+
         $storeId = $payment['store_id'] ?? '';
         $value = $payment['transaction_amount'] ?? '';
         $paymentType = $payment['payment_type_id'] ?? '';
         $operationTax = $this->getOperationTax($payment);
 
-        $machine = $this->getMachine($customer, $storeId);
+        $machine = $this->getMachine($customer, $storeId, $externalReference);
 
-        if (!$machine || $machine->disabled) {
+        if (!$machine || (bool)$machine->disabled) {
             return $this->reversal(
                 $customer->mercadoPagoToken,
                 $machine->id ?? '',
@@ -121,9 +123,13 @@ readonly class ReceiptPayment
         return '';
     }
 
-    private function getMachine(Cliente $customer, string $storeId): ?Maquina
+    private function getMachine(Cliente $customer, string $storeId, string $externalReference): ?Maquina
     {
-        return $customer->maquinas()->with('pagamentos')->get()->first(function(Maquina $maquina) use ($storeId) {
+        return $customer->maquinas()->with('pagamentos')->get()->first(function(Maquina $maquina) use ($storeId, $externalReference) {
+            if ($externalReference) {
+                return $maquina->id === $externalReference;
+            }
+
             return $maquina->store_id === $storeId;
         });
     }
