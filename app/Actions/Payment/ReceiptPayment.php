@@ -28,7 +28,7 @@ readonly class ReceiptPayment
     {
         // BY-PASS para validação do MP
         if ($this->mercadoPagoId === '123456') {
-            return response()->json(['status', 'ok', 'pago' => true]);
+            return response()->json(['status' => 'ok', 'pago' => true]);
         }
 
         $customer = $this->getCustomer();
