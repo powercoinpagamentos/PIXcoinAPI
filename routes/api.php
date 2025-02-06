@@ -50,3 +50,4 @@ Route::post('/rota-recebimento-mercado-pago-dinamica/{id}', [PaymentController::
 Route::post('/rota-recebimento-especie/{id}', [PaymentController::class, 'receiptPaymentCash']);
 Route::post('/webhookmercadopago/{id}', [PaymentController::class, 'testMercadoPago']);
 Route::post('/webhookpagbank/{clientId}', [PaymentController::class, 'receiptPaymentFromPagBank']);
+Route::post('/mp-qrcode-generator/{clientId}/{machineId}', [PaymentController::class, 'qrCodeGenerator']);

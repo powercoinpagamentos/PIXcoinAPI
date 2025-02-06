@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Payment\GenerateQRCode;
 use App\Actions\Payment\ReceiptPayment;
 use App\Actions\Payment\ReceiptPaymentCash;
 use App\Actions\Payment\ReceiptPaymentFromPagBank;
@@ -43,5 +44,15 @@ class PaymentController
         $notificationCode = $request->get('notificationCode');
 
         return (new ReceiptPaymentFromPagBank($clientId, $notificationCode))->run();
+    }
+
+    public function qrCodeGenerator(Request $request, string $clientId, string $machineId): JsonResponse
+    {
+        $value = $request->get('valor');
+        if (!$value) {
+            return new JsonResponse(['status' => 'Valor não informado ou inválido!'], 400);
+        }
+
+        return (new GenerateQRCode($clientId, $machineId, $value))->run();
     }
 }

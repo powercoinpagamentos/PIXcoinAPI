@@ -98,4 +98,25 @@ class PaymentService implements IPayment
         $body = $response->getBody();
         return json_decode($body, true);
     }
+
+    /**
+     * @throws GuzzleException
+     */
+    public function createPaymentIntention(string $token, array $paymentData)
+    {
+        $client = new Client([
+            'verify' => false,
+        ]);
+
+        $response = $client->request('POST', 'https://api.mercadopago.com/v1/payments', [
+            'headers' => [
+                'content-type' => 'application/json',
+                'Authorization' => 'Bearer ' . $token,
+            ],
+            'json' => $paymentData,
+        ]);
+
+        $body = $response->getBody();
+        return json_decode($body, true);
+    }
 }
