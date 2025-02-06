@@ -28,12 +28,12 @@ readonly class ReceiptPayment
     {
         // BY-PASS para validação do MP
         if ($this->mercadoPagoId === '123456') {
-            return response()->json(['status', 'ok']);
+            return response()->json(['status', 'ok', 'pago' => true]);
         }
 
         $customer = $this->getCustomer();
         if (!$customer) {
-            return response()->json(['error' => 'Cliente não encontrado'], 404);
+            return response()->json(['error' => 'Cliente não encontrado', 'pago' => false], 404);
         }
 
         $payment = $this->getPaymentsFromMP($customer->mercadoPagoToken);
@@ -76,7 +76,7 @@ readonly class ReceiptPayment
         }
 
         if ($this->existingPayment($machine)) {
-            return response()->json(['error' => 'Esse pagamento já existe na base.'], 409);
+            return response()->json(['error' => 'Esse pagamento já existe na base.', 'pago' => false], 409);
         }
 
         try {
@@ -99,7 +99,7 @@ readonly class ReceiptPayment
 
         $this->notifierDiscord($value, $customer->nome, $machine->nome);
 
-        return response()->json(['message' => 'Novo pagamento registrado!']);
+        return response()->json(['message' => 'Novo pagamento registrado!', 'pago' => true]);
     }
 
     private function getCustomer(): ?Cliente
@@ -149,7 +149,7 @@ readonly class ReceiptPayment
             );
         }
 
-        return response()->json(['retorno' => 'pagamento estornado']);
+        return response()->json(['retorno' => 'pagamento estornado', 'pago' => false]);
     }
 
     private function createPayment(
