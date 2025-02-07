@@ -31,7 +31,7 @@ class PaymentService implements IPayment
     /**
      * @throws GuzzleException
      */
-    public function reverse(
+    public function reversePaymentFromMP(
         string $mercadoPagoId,
         string $clientToken,
     )
@@ -102,7 +102,7 @@ class PaymentService implements IPayment
     /**
      * @throws GuzzleException
      */
-    public function createPaymentIntention(string $token, array $paymentData)
+    public function createPaymentIntentionMP(string $token, array $paymentData)
     {
         $client = new Client([
             'verify' => false,

@@ -40,7 +40,7 @@ readonly class GenerateQRCode
             'external_reference' => $this->machineId,
         ];
 
-        $paymentData = $this->paymentService->createPaymentIntention($client->mercadoPagoToken, $requestData);
+        $paymentData = $this->paymentService->createPaymentIntentionMP($client->mercadoPagoToken, $requestData);
         $qrCode = $paymentData['point_of_interaction']['transaction_data']['qr_code'];
         $qrCodeBase64 = $paymentData['point_of_interaction']['transaction_data']['qr_code_base64'];
 

@@ -154,7 +154,7 @@ readonly class ReceiptPayment
         string $reasonReversed
     ): JsonResponse
     {
-        $this->paymentService->reverse($this->mercadoPagoId, $clientToken);
+        $this->paymentService->reversePaymentFromMP($this->mercadoPagoId, $clientToken);
         if ($machineId) {
             $this->createPayment(
                 $machineId,
