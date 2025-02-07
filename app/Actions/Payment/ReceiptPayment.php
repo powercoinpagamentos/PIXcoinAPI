@@ -38,7 +38,7 @@ readonly class ReceiptPayment
 
         $payment = $this->getPaymentsFromMP($customer->mercadoPagoToken);
 
-        if ($payment['status'] === 'pending') {
+        if ($payment['status'] !== 'approved') {
             return new JsonResponse(['message' => "Pagamento ainda não realizado", 'pago' => false]);
         }
 
