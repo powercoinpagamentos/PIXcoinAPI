@@ -38,18 +38,12 @@ readonly class ReceiptPayment
 
         $payment = $this->getPaymentsFromMP($customer->mercadoPagoToken);
 
-        if ($payment['status'] === 'pending') {
-            return new JsonResponse(['message' => "Pagamento ainda não realizado", 'pago' => false]);
-        }
-
-        $externalReference = isset($payment['external_reference']) ? (string) $payment['external_reference'] : "";
-
         $storeId = $payment['store_id'] ?? '';
         $value = $payment['transaction_amount'] ?? '';
         $paymentType = $payment['payment_type_id'] ?? '';
         $operationTax = $this->getOperationTax($payment);
 
-        $machine = $this->getMachine($customer, $storeId, $externalReference);
+        $machine = $this->getMachine($customer, $storeId);
 
         if (!$machine || (bool)$machine->disabled) {
             return $this->reversal(
@@ -127,13 +121,9 @@ readonly class ReceiptPayment
         return '';
     }
 
-    private function getMachine(Cliente $customer, string $storeId, string $externalReference): ?Maquina
+    private function getMachine(Cliente $customer, string $storeId): ?Maquina
     {
-        return $customer->maquinas()->with('pagamentos')->get()->first(function(Maquina $maquina) use ($storeId, $externalReference) {
-            if ($externalReference) {
-                return $maquina->id === $externalReference;
-            }
-
+        return $customer->maquinas()->with('pagamentos')->get()->first(function(Maquina $maquina) use ($storeId) {
             return $maquina->store_id === $storeId;
         });
     }
