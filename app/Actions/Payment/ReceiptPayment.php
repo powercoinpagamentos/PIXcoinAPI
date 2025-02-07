@@ -51,6 +51,14 @@ readonly class ReceiptPayment
 
         $machine = $this->getMachine($customer, $storeId, $externalReference);
 
+        $paymentAlreadyExists = Pagamento::where('maquina_id', $machine->id)
+            ->where('mercadoPagoId', $this->mercadoPagoId)
+            ->exists();
+
+        if ($paymentAlreadyExists) {
+            return new JsonResponse(['message' => "Pagamento já realizado.", 'pago' => true]);
+        }
+
         if (!$machine || (bool)$machine->disabled) {
             return $this->reversal(
                 $customer->mercadoPagoToken,
