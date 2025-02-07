@@ -38,7 +38,7 @@ readonly class ReceiptPayment
 
         $payment = $this->getPaymentsFromMP($customer->mercadoPagoToken);
 
-        if ($payment['status'] !== 'approved') {
+        if ($payment['status'] === 'pending') {
             return new JsonResponse(['message' => "Pagamento ainda não realizado", 'pago' => false]);
         }
 
@@ -50,14 +50,6 @@ readonly class ReceiptPayment
         $operationTax = $this->getOperationTax($payment);
 
         $machine = $this->getMachine($customer, $storeId, $externalReference);
-
-        $paymentAlreadyExists = Pagamento::where('maquina_id', $machine->id)
-            ->where('mercadoPagoId', $this->mercadoPagoId)
-            ->exists();
-
-        if ($paymentAlreadyExists) {
-            return new JsonResponse(['message' => "Pagamento já realizado.", 'pago' => true]);
-        }
 
         if (!$machine || (bool)$machine->disabled) {
             return $this->reversal(
