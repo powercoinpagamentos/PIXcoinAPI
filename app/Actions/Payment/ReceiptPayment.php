@@ -38,6 +38,10 @@ readonly class ReceiptPayment
 
         $payment = $this->getPaymentsFromMP($customer->mercadoPagoToken);
 
+        if ($payment['status'] !== 'approved') {
+            return new JsonResponse(['message' => "Pagamento ainda não realizado", 'pago' => false]);
+        }
+
         $storeId = $payment['store_id'] ?? '';
         $value = $payment['transaction_amount'] ?? '';
         $paymentType = $payment['payment_type_id'] ?? '';
