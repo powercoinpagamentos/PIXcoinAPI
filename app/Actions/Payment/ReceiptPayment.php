@@ -59,6 +59,10 @@ readonly class ReceiptPayment
             );
         }
 
+        if ($this->existingPayment($machine)) {
+            return new JsonResponse(['message' => "Pagamento já realizado.", 'pago' => true]);
+        }
+
         if ($this->machineOffline($machine)) {
             return $this->reversal(
                 $customer->mercadoPagoToken,
@@ -77,10 +81,6 @@ readonly class ReceiptPayment
                 $paymentType,
                 'Valor abaixo do preço da máquina'
             );
-        }
-
-        if ($this->existingPayment($machine)) {
-            return response()->json(['error' => 'Esse pagamento já existe na base.', 'pago' => false], 409);
         }
 
         try {
@@ -207,9 +207,7 @@ readonly class ReceiptPayment
 
     private function existingPayment(Maquina $machine): bool
     {
-        return $machine->pagamentos->contains(function ($pagamento) {
-            return $pagamento->mercadoPagoId === $this->mercadoPagoId;
-        });
+        return $machine->pagamentos()->where('mercadoPagoId', $this->mercadoPagoId)->exists();
     }
 
     private function handleTramoia(): void
