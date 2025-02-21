@@ -30,9 +30,9 @@ readonly class DisabledMachine
             $cliente->maquinas()->update(['disabled' => $disabled]);
 
             if ($disabled) {
-                (new EmailService())->sendDisabledMachineEmail('suvilao@gmail.com', 'Fulano de tal');
+                (new EmailService())->sendDisabledMachineEmail($cliente->email, $cliente->nome);
             } else {
-                (new EmailService())->sendEnableMachineEmail('suvilao@gmail.com', 'Fulano de tal');
+                (new EmailService())->sendEnableMachineEmail($cliente->email, $cliente->nome);
             }
 
             return [
