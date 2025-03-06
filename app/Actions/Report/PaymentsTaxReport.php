@@ -30,7 +30,7 @@ readonly class PaymentsTaxReport
                 ->sum('taxas') ?? 0.0;
         };
 
-        $totalTaxasPix = $calculateTotalFees('bank_transfer');
+        $totalTaxasPix = $calculateTotalFees('bank_transfer') + ($calculateTotalFees('account_money') ?? 0);
         $totalTaxasCredito = $calculateTotalFees('credit_card');
         $totalTaxasDebito = $calculateTotalFees('debit_card');
 
