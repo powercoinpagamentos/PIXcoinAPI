@@ -21,7 +21,7 @@ readonly class PaymentsReport
         $startDate = Carbon::parse($this->startDate)->startOfDay();
         $endDate = Carbon::parse($this->endDate)->endOfDay();
 
-        $tiposPagamento = ['bank_transfer', 'credit_card', 'debit_card'];
+        $tiposPagamento = ['bank_transfer', 'credit_card', 'debit_card', 'account_money'];
 
         $pagamentos = Pagamento::query()
             ->where('maquina_id', $this->machineId)
@@ -33,8 +33,10 @@ readonly class PaymentsReport
         $totaisPorTipo = $pagamentos->groupBy('tipo')
             ->map(fn($items) => $items->sum('valor'));
 
+        $totalPIX = ($totaisPorTipo['bank_transfer'] ?? 0) + ($totaisPorTipo['account_money'] ?? 0);
+
         return response()->json([
-            'pix' => $totaisPorTipo['bank_transfer'] ?? 0,
+            'pix' => $totalPIX ?? 0,
             'especie' => -1,
             'credito' => $totaisPorTipo['credit_card'] ?? 0,
             'debito' => $totaisPorTipo['debit_card'] ?? 0,
