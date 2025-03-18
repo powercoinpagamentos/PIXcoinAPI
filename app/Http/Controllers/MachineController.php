@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Actions\Machine\AddRemoteCredit;
 use App\Actions\Machine\ConsultMachine;
 use App\Actions\Machine\CreateLittleMachine;
+use App\Actions\Machine\DecrementMachineStock;
 use App\Actions\Machine\DeleteLittleMachine;
 use App\Actions\Machine\GetAllMachines;
 use App\Actions\Machine\GetLittleMachine;
+use App\Actions\Machine\IncrementMachineStock;
 use App\Actions\Machine\MachineIsOnline;
 use App\Actions\Machine\RemoveSelectedPayments;
 use App\Actions\Machine\UpdateLittleMachine;
@@ -210,5 +212,17 @@ class MachineController extends Controller
     public function deleteLittleMachine(Request $request, string $code): JsonResponse
     {
         return (new DeleteLittleMachine($code))->run();
+    }
+
+    public function decrementStock(Request $request, string $machineId): JsonResponse
+    {
+        $value = $request->get('valor');
+        return (new DecrementMachineStock($value, $machineId))->run();
+    }
+
+    public function incrementStock(Request $request, string $machineId): JsonResponse
+    {
+        $value = $request->get('valor');
+        return (new IncrementMachineStock($value, $machineId))->run();
     }
 }

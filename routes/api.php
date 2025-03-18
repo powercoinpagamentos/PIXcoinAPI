@@ -52,3 +52,6 @@ Route::post('/rota-recebimento-especie/{id}', [PaymentController::class, 'receip
 Route::post('/webhookmercadopago/{id}', [PaymentController::class, 'testMercadoPago']);
 Route::post('/webhookpagbank/{clientId}', [PaymentController::class, 'receiptPaymentFromPagBank']);
 Route::post('/mp-qrcode-generator/{clientId}/{machineId}', [PaymentController::class, 'qrCodeGenerator']);
+
+Route::post('/decrementar-estoque/{machineId}', [MachineController::class, 'decrementStock']);
+Route::post('/setar-estoque/{machineId}', [MachineController::class, 'incrementStock']);
