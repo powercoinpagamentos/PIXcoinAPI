@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Admin\AdminLogin;
+use App\Actions\Customer\AddCustomerWarning;
 use App\Actions\Customer\CreateCustomer;
 use App\Actions\Customer\DeleteCustomer;
 use App\Actions\Customer\GetAllCustomers;
@@ -277,5 +278,16 @@ class AdminController extends Controller
         }
 
         return (new DeleteCustomer($id))->run();
+    }
+
+    public function addCustomerWarning(Request $request, string $id): JsonResponse
+    {
+        $token = $request->header('x-access-token');
+        $userId = (new AdminHelper())->validateAdminToken($token);
+        if (!$userId) {
+            return response()->json(['error' => 'Usuário sem autorização.'], 401);
+        }
+
+        return (new AddCustomerWarning($id, $request->get('message')))->run();
     }
 }
