@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Actions\Customer\CustomerLogin;
 use App\Http\Requests\Customer\CustomerLoginRequest;
+use App\Models\Cliente;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CustomerController extends Controller
 {
@@ -19,5 +21,12 @@ class CustomerController extends Controller
     {
         // @TODO: Validar cliente inadimplente
         return new JsonResponse(['status' => true]);
+    }
+
+    public function getWarning(Request $request, string $clientId): JsonResponse
+    {
+        $client = Cliente::find($clientId) ?? throw new NotFoundHttpException('Customer not found!');
+
+        return response()->json(['message' => $client->aviso ?? null]);
     }
 }
