@@ -9,8 +9,9 @@ use Illuminate\Http\JsonResponse;
 readonly class AddCustomerWarning
 {
     public function __construct(
-        private string $clientId,
-        private ?string $message
+        private string  $clientId,
+        private ?string $message,
+        private ?string $showForAll
     )
     {
     }
@@ -34,6 +35,12 @@ readonly class AddCustomerWarning
 
     private function updateCustomer(): void
     {
+        if ($this->showForAll !== 'null') {
+            Cliente::query()
+                ->update(['aviso' => $this->message ?? null]);
+            return;
+        }
+
         Cliente::query()
             ->where('id', $this->clientId)
             ->update(['aviso' => $this->message ?? null]);

@@ -288,6 +288,10 @@ class AdminController extends Controller
             return response()->json(['error' => 'Usuário sem autorização.'], 401);
         }
 
-        return (new AddCustomerWarning($id, $request->get('message')))->run();
+        return (new AddCustomerWarning(
+            $id,
+            $request->get('message'),
+            $request->get('showForAll')
+        ))->run();
     }
 }
