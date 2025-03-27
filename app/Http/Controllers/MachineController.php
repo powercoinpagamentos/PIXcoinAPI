@@ -23,6 +23,7 @@ use App\Actions\Report\PaymentsRefundsReport;
 use App\Actions\Report\PaymentsReport;
 use App\Actions\Report\PaymentsTaxReport;
 use App\Helpers\CustomerHelper;
+use App\Models\Cliente;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -37,6 +38,11 @@ class MachineController extends Controller
         $userId = (new CustomerHelper())->validateToken($token);
         if (!$userId) {
             return response()->json(['error' => 'Usuário sem autorização.'], 401);
+        }
+
+        $client = Cliente::find($userId);
+        if ($client->is_employee) {
+            return (new GetAllMachines($client->parent_id))->run();
         }
 
         return (new GetAllMachines($userId))->run();

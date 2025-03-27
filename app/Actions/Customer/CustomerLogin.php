@@ -44,6 +44,11 @@ readonly class CustomerLogin
             'ativo' => (bool)$customer->ativo,
             'vencimento' => $customer->dataVencimento,
             'aviso' => $customer->aviso,
+            'employee' => (bool)$customer->is_employee,
+            'canDeletePayments' => (bool)$customer->can_delete_payments,
+            'canAddRemoteCredit' => (bool)$customer->can_add_remote_credit,
+            'canEditMachine' => (bool)$customer->can_add_edit_machine,
+            'parent_id' => $customer->parent_id ?? null,
         ]);
     }
 
