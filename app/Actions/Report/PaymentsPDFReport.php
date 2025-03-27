@@ -48,6 +48,7 @@ readonly class PaymentsPDFReport
             'totalComEstorno' => $totalPayments['totalComEstorno'],
             'totalEspecie' => $totalPayments['totalEspecie'],
             'totalCreditoRemoto' => $totalPayments['totalCreditoRemoto'],
+            'totalBonus' => $totalPayments['totalBonus'],
             'tableArray' => $tableArray,
             'startDate' => $startDate,
             'endDate' => $endDate,
@@ -69,8 +70,9 @@ readonly class PaymentsPDFReport
             'CASH' => 'Especie',
             'debit_card' => 'Débito',
             'credit_card' => 'Crédito',
-            'account_money' => '',
-            'remote_credit' => 'Crédito Remoto'
+            'account_money' => 'PIX',
+            'remote_credit' => 'Crédito Remoto',
+            'bonus' => "Jogada Bônus"
         ];
 
         return $paymentFormMap[$currentPaymentForm] ?? '';

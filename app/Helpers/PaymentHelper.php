@@ -17,6 +17,7 @@ class PaymentHelper
             'totalComEstorno' => 0,
             'totalEspecie' => 0,
             'totalCreditoRemoto' => 0,
+            'totalBonus' => 0,
             'hasPagBank' => false,
             'pagBankTotais' => []
         ];
@@ -46,6 +47,10 @@ class PaymentHelper
 
             if($payment->mercadoPagoId === 'CRÉDITO REMOTO') {
                 $totais['totalCreditoRemoto'] += $valor;
+            }
+
+            if ($payment->mercadoPagoId === 'JOGADA BÔNUS') {
+                $totais['totalBonus'] += $valor;
             }
         }
 
