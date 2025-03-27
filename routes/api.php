@@ -29,6 +29,7 @@ Route::post('/cliente/{id}/add-warning', [AdminController::class, 'addCustomerWa
 Route::post('/login-cliente', [CustomerController::class, 'login']);
 Route::get('/is-client-ok/{clientId}', [CustomerController::class, 'clientOk']);
 Route::get('/warning/{clientId}', [CustomerController::class, 'getWarning']);
+Route::post('/create-employee', [CustomerController::class, 'createEmployee']);
 
 Route::get('/maquinas', [MachineController::class, 'all']);
 Route::put('/maquina-cliente', [MachineController::class, 'update']);

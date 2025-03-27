@@ -34,6 +34,11 @@ class Cliente extends Model
         'ultimo_acesso',
         'ativo',
         'dataVencimento',
+        'parent_id',
+        'can_delete_payments',
+        'can_add_remote_credit',
+        'can_add_edit_machine',
+        'is_employee'
     ];
 
     public function pessoa(): BelongsTo
@@ -49,5 +54,15 @@ class Cliente extends Model
     public function pagamentos(): HasMany
     {
         return $this->hasMany(Pagamento::class, 'cliente_id');
+    }
+
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(Cliente::class, 'parent_id');
+    }
+
+    public function employees(): HasMany
+    {
+        return $this->hasMany(Cliente::class, 'parent_id');
     }
 }
