@@ -52,4 +52,17 @@ class CustomerController extends Controller
             'is_employee' => 1,
         ]);
     }
+
+    public function getEmployees(Request $request): JsonResponse
+    {
+        $token = $request->header('x-access-token');
+        $userId = (new CustomerHelper())->validateToken($token);
+        if (!$userId) {
+            return response()->json(['error' => 'Usuário sem autorização.'], 401);
+        }
+
+        $customer = Cliente::find($userId);
+
+        return new JsonResponse($customer->employees);
+    }
 }
