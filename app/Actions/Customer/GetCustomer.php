@@ -78,6 +78,9 @@ readonly class GetCustomer
                 'disabled' => (bool)$machine->disabled,
                 'tempoLow' => $machine->tempoLow,
                 'tempoHigh' => $machine->tempoHigh,
+                'moves' => $machine->moves,
+                'bonus' => $machine->bonus,
+                'bonusPlay' => (bool)$machine->bonusPlay,
             ];
         });
     }

@@ -178,6 +178,9 @@ class AdminController extends Controller
             'cliente_id' => $request->get('clienteId'),
             'valor_do_pix' => '0',
             'maquininha_serial' => $request->get('maquininha_serial'),
+            'moves' => $request->get('moves'),
+            'bonus' => $request->get('bonus'),
+            'bonusPlay' => $request->get('bonusPlay'),
         ];
 
         return (new CreateMachine($machineData))->run();

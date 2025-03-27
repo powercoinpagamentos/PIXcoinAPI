@@ -37,7 +37,11 @@ class Maquina extends Model
         'ultima_requisicao',
         'disabled',
         'tempoHigh',
-        'tempoLow'
+        'tempoLow',
+        'bonusPlay',
+        'moves',
+        'moves_count',
+        'bonus'
     ];
 
     public function pessoa(): BelongsTo
