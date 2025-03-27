@@ -63,6 +63,19 @@ class CustomerController extends Controller
 
         $customer = Cliente::find($userId);
 
-        return new JsonResponse($customer->employees);
+        return new JsonResponse($customer->employees ?? []);
+    }
+
+    public function deleteEmployee(Request $request, string $employeeId): JsonResponse
+    {
+        $token = $request->header('x-access-token');
+        $userId = (new CustomerHelper())->validateToken($token);
+        if (!$userId) {
+            return response()->json(['error' => 'Usuário sem autorização.'], 401);
+        }
+
+        Cliente::destroy($employeeId);
+
+        return response()->json(['message' => 'Funcionário removido']);
     }
 }
