@@ -33,8 +33,15 @@ readonly class PaymentsPDFReport
 
         $adjustedPayment = $this->transformPaymentsData($payments->toArray());
         $filteredValuesArray = array_map(function($item) {
-            return array_values(array_filter($item, fn($value) => $value !== ''));
+            $filteredItem = array_filter($item, fn($value) => $value !== '');
+            if (isset($filteredItem['identifierMP']) && in_array($filteredItem['identifierMP'], ['JOGADA BÔNUS', 'CRÉDITO REMOTO'])) {
+                return [];
+            }
+
+            return array_values($filteredItem);
         }, $adjustedPayment);
+
+        $filteredValuesArray = array_filter($filteredValuesArray);
 
         $tableArray = [
             'headers' => ['Data', 'Pagamento', 'Valor', 'Ident.MP', 'Estornado'],
@@ -47,8 +54,6 @@ readonly class PaymentsPDFReport
             'totalSemEstorno' => $totalPayments['totalSemEstorno'],
             'totalComEstorno' => $totalPayments['totalComEstorno'],
             'totalEspecie' => $totalPayments['totalEspecie'],
-            'totalCreditoRemoto' => $totalPayments['totalCreditoRemoto'],
-            'totalBonus' => $totalPayments['totalBonus'],
             'tableArray' => $tableArray,
             'startDate' => $startDate,
             'endDate' => $endDate,

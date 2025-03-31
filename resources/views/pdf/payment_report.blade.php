@@ -81,9 +81,9 @@
             <h2>Soma de pagamentos:</h2>
         @endif
 
-        <h3  style="margin-bottom: 15px; border-bottom: 2px solid #0097b2;">Soma total entre Pix, Débito, Crédito e Crédito Remoto: R$ {{ number_format($totalSemEstorno - $totalEspecie, 2, ',', '.') }}</h3>
+        <h3  style="margin-bottom: 15px; border-bottom: 2px solid #0097b2;">Soma total entre Pix, Débito e Crédito: R$ {{ number_format($totalSemEstorno - $totalEspecie, 2, ',', '.') }}</h3>
         <h3  style="margin-bottom: 15px; border-bottom: 2px solid #0097b2;">Soma total de Espécie: R$ {{ number_format($totalEspecie, 2, ',', '.') }}</h3>
-        <h3  style="margin-bottom: 15px; border-bottom: 2px solid #0097b2;">Soma total entre Espécie, Pix, Débito, Crédito e Crédito Remoto: R$ {{ number_format($totalSemEstorno, 2, ',', '.') }}</h3>
+        <h3  style="margin-bottom: 15px; border-bottom: 2px solid #0097b2;">Soma total entre Espécie, Pix, Débito e Crédito: R$ {{ number_format($totalSemEstorno, 2, ',', '.') }}</h3>
         <h3  style="margin-bottom: 15px; border-bottom: 2px solid #0097b2;">Soma total de estornos em Pix, Débito e Crédito: R$ {{ number_format($totalComEstorno, 2, ',', '.') }}</h3>
     </div>
 @endif
@@ -98,7 +98,7 @@
     @if($totalSemEstorno > 0  || $totalComEstorno > 0)
         <div class="content">
             <h2>Soma de pagamentos do PagSeguro + Mercado Pago:</h2>
-            <h3  style="margin-bottom: 15px; border-bottom: 2px solid #0097b2;">Soma total entre Espécie, Pix, Débito, Crédito e Crédito Remoto: R$ {{ number_format($pagBankTotais['totalSemEstorno'] + $totalSemEstorno, 2, ',', '.') }}</h3>
+            <h3  style="margin-bottom: 15px; border-bottom: 2px solid #0097b2;">Soma total entre Espécie, Pix, Débito e Crédito: R$ {{ number_format($pagBankTotais['totalSemEstorno'] + $totalSemEstorno, 2, ',', '.') }}</h3>
             <h3  style="margin-bottom: 15px; border-bottom: 2px solid #0097b2;">Soma total de estornos em Pix, Débito e Crédito: R$ {{ number_format($pagBankTotais['totalComEstorno'] + $totalComEstorno, 2, ',', '.') }}</h3>
         </div>
     @endif

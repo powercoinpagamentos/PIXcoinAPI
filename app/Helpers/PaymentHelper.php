@@ -16,8 +16,6 @@ class PaymentHelper
             'totalSemEstorno' => 0,
             'totalComEstorno' => 0,
             'totalEspecie' => 0,
-            'totalCreditoRemoto' => 0,
-            'totalBonus' => 0,
             'hasPagBank' => false,
             'pagBankTotais' => []
         ];
@@ -37,20 +35,17 @@ class PaymentHelper
 
             if ($payment->estornado) {
                 $totais['totalComEstorno'] += $valor;
-            } else {
+            }
+
+            if (
+                (bool)$payment->estornado === false &&
+                !in_array($payment->mercadoPagoId, ['JOGADA BÔNUS', 'CRÉDITO REMOTO'])
+            ) {
                 $totais['totalSemEstorno'] += $valor;
             }
 
             if ($payment->mercadoPagoId === 'CASH') {
                 $totais['totalEspecie'] += $valor;
-            }
-
-            if($payment->mercadoPagoId === 'CRÉDITO REMOTO') {
-                $totais['totalCreditoRemoto'] += $valor;
-            }
-
-            if ($payment->mercadoPagoId === 'JOGADA BÔNUS') {
-                $totais['totalBonus'] += $valor;
             }
         }
 
