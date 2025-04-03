@@ -57,7 +57,6 @@ readonly class CustomerLogin
     {
         return Cliente::query()
             ->where('email', $this->email)
-            ->select('senha')
             ->first();
     }
 
