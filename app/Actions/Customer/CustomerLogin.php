@@ -18,6 +18,10 @@ readonly class CustomerLogin
     {
     }
 
+    /**
+     * @throws \DateMalformedStringException
+     * @throws RandomException
+     */
     public function run(): JsonResponse
     {
         $customer = $this->getCustomer();
@@ -31,14 +35,11 @@ readonly class CustomerLogin
 
         $this->updateLastAccess($customer);
 
-        // Removido temporariamente
-        // $this->notifierDiscord();
-
         return response()->json([
             'email' => $customer->email,
             'id' => $customer->id,
             'name' => $customer->nome,
-            'lastLogin' => $customer->ultimo_acesso->setTimezone('America/Sao_Paulo')->format('Y-m-d\TH:i:sP'),
+            'lastLogin' => now()->setTimezone('America/Sao_Paulo')->format('Y-m-d\TH:i:sP'),
             'token' => $this->generateJWT($customer->id),
             'type' => 'pessoa',
             'key' => 'CLIENT',
@@ -88,17 +89,5 @@ readonly class CustomerLogin
             ->getToken($config->signer(), $config->signingKey());
 
         return $token->toString();
-    }
-
-    private function notifierDiscord(): void
-    {
-        /** @var IDiscord $discordAPI */
-        $discordAPI = resolve(IDiscord::class);
-
-        $discordAPI->notificar(
-            env('NOTIFICACOES_LOGINS'),
-            'Novo login efetuado!',
-            'O cliente de email ' . $this->email . ' acabou de realizar login.',
-        );
     }
 }

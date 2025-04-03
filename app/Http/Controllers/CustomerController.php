@@ -10,10 +10,15 @@ use App\Models\Cliente;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Random\RandomException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CustomerController extends Controller
 {
+    /**
+     * @throws \DateMalformedStringException
+     * @throws RandomException
+     */
     public function login(CustomerLoginRequest $request): JsonResponse
     {
         $adminLoginAction = new CustomerLogin($request->email, $request->senha);
