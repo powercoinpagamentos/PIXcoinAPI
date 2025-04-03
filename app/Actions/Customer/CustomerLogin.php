@@ -31,7 +31,8 @@ readonly class CustomerLogin
 
         $this->updateLastAccess($customer);
 
-        $this->notifierDiscord();
+        // Removido temporariamente
+        // $this->notifierDiscord();
 
         return response()->json([
             'email' => $customer->email,
@@ -54,7 +55,10 @@ readonly class CustomerLogin
 
     private function getCustomer(): ?Cliente
     {
-        return Cliente::where('email', $this->email)->first();
+        return Cliente::query()
+            ->where('email', $this->email)
+            ->select('senha')
+            ->first();
     }
 
     private function updateLastAccess(Cliente $customer): void
