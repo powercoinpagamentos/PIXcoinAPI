@@ -42,7 +42,14 @@ readonly class GetCustomer
             $machine->pagamentos()->orderByDesc('data')->get()
         );
 
-        $pagBankTotais = $totais['pagBankTotais'] ?? ['totalSemEstorno' => 0, 'totalComEstorno' => 0];
+        $pagBankTotais = $totais['pagBankTotais'] ?? [
+            'totalSemEstorno' => 0,
+            'totalComEstorno' => 0
+        ];
+
+        $totalSemEstorno = ($totais['totalSemEstorno'] ?? 0) + ($pagBankTotais['totalSemEstorno'] ?? 0);
+        $totalComEstorno = ($totais['totalComEstorno'] ?? 0) + ($pagBankTotais['totalComEstorno'] ?? 0);
+        $totalEspecie = $totais['totalEspecie'] ?? 0;
 
         return [
             'id' => $machine->id,
@@ -59,9 +66,9 @@ readonly class GetCustomer
             'ultima_requisicao' => $machine->ultima_requisicao,
             'status' => $status,
             'pulso' => $machine->valorDoPulso,
-            'totalSemEstorno' => $totais['totalSemEstorno'] + $pagBankTotais['totalSemEstorno'],
-            'totalComEstorno' => $totais['totalComEstorno'] + $pagBankTotais['totalComEstorno'],
-            'totalEspecie' => $totais['totalEspecie'],
+            'totalSemEstorno' => $totalSemEstorno,
+            'totalComEstorno' => $totalComEstorno,
+            'totalEspecie' => $totalEspecie,
             'disabled' => (bool) $machine->disabled,
             'tempoLow' => $machine->tempoLow,
             'tempoHigh' => $machine->tempoHigh,
