@@ -63,13 +63,9 @@ readonly class ConsultMachine
 
     private function updateMachine(Maquina $machine): void
     {
-        Maquina::query()
-            ->where('id', $this->machineId)
-            ->update([
-                'valor_do_pix' => "0",
-                'ultima_requisicao' => now(),
-                'moves_count' => $machine->moves_count
-            ]);
+        $machine->valor_do_pix = "0";
+        $machine->ultima_requisicao = now();
+        $machine->save();
     }
 
     private function convertPixValue(float|string $valorPix, float $valorDoPulso): string
