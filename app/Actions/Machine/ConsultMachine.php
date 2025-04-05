@@ -28,7 +28,11 @@ readonly class ConsultMachine
             $pulso = $this->convertPixValue($machine->valor_do_pix, $machine->valorDoPulso);
         }
 
-        if ($pulso !== '0000' && $currentPixValue === $machine->valor_do_pix) {
+        if (
+            $machine->bonusPlay &&
+            $pulso !== '0000'
+            && $currentPixValue === $machine->valor_do_pix
+        ) {
             $machine->increment('moves_count');
         }
 
