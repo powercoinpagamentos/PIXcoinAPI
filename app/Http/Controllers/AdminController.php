@@ -310,9 +310,9 @@ class AdminController extends Controller
 
             Cliente::query()
                 ->where('id', $id)
-                ->update(['senha' => Hash::make("p!xcoin_cliente")]);
+                ->update(['senha' => Hash::make($request->get('password'))]);
 
-            return response()->json(['message' => 'Nova senha: p!xcoin_cliente']);
+            return response()->json(['message' => 'Senha restaurada com sucesso.']);
         } catch (\Exception $exception) {
             return response()->json(['message' => 'Falha ao restaurar senha']);
         }
