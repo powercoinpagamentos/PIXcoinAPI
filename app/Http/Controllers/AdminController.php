@@ -23,6 +23,7 @@ use App\Actions\Report\PaymentsReport;
 use App\Actions\Report\PaymentsTaxReport;
 use App\Helpers\AdminHelper;
 use App\Http\Requests\Admin\AdminLoginRequests;
+use App\Models\Cliente;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -296,5 +297,24 @@ class AdminController extends Controller
             $request->get('message'),
             $request->get('showForAll')
         ))->run();
+    }
+
+    public function restorePassword(Request $request, string $id): JsonResponse
+    {
+        try {
+            $token = $request->header('x-access-token');
+            $userId = (new AdminHelper())->validateAdminToken($token);
+            if (!$userId) {
+                return response()->json(['error' => 'Usuário sem autorização.'], 401);
+            }
+
+            Cliente::query()
+                ->where('id', $id)
+                ->update(['senha' => Hash::make("p!xcoin_cliente")]);
+
+            return response()->json(['message' => 'Nova senha: p!xcoin_cliente']);
+        } catch (\Exception $exception) {
+            return response()->json(['message' => 'Falha ao restaurar senha']);
+        }
     }
 }

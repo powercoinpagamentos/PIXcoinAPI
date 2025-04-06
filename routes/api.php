@@ -25,6 +25,7 @@ Route::put('/alterar-cliente-adm-new/{id}', [AdminController::class, 'updateCust
 Route::post('/cliente', [AdminController::class, 'createCustomer']);
 Route::delete('/cliente/{id}', [AdminController::class, 'deleteCustomer']);
 Route::post('/cliente/{id}/add-warning', [AdminController::class, 'addCustomerWarning']);
+Route::post('/cliente/restore-password/{id}', [AdminController::class, 'restorePassword']);
 
 Route::post('/login-cliente', [CustomerController::class, 'login']);
 Route::get('/is-client-ok/{clientId}', [CustomerController::class, 'clientOk']);
