@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\MachineController;
 use App\Http\Controllers\PaymentController;
@@ -61,3 +62,5 @@ Route::post('/mp-qrcode-generator/{clientId}/{machineId}', [PaymentController::c
 
 Route::post('/decrementar-estoque/{machineId}', [MachineController::class, 'decrementStock']);
 Route::post('/setar-estoque/{machineId}', [MachineController::class, 'incrementStock']);
+
+Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink']);
