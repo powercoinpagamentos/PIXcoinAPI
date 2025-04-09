@@ -9,4 +9,5 @@ interface IPayment
     public function reversePaymentFromMP(string $mercadoPagoId, string $clientToken);
     public function getPaymentFromPagBank(string $notificationCode, string $clientEmail, string $clientToken);
     public function reversePaymentFromPagBank(string $email, string $token, string $operationId);
+    public function createPaymentOrderPagBank(array $data, string $customerId, string $token);
 }

@@ -119,4 +119,26 @@ class PaymentService implements IPayment
         $body = $response->getBody();
         return json_decode($body, true);
     }
+
+    /**
+     * @throws GuzzleException
+     */
+    public function createPaymentOrderPagBank(array $data, string $customerId, string $token)
+    {
+        $client = new Client([
+            'verify' => false,
+        ]);
+        $uri = env('PAGBANK_URI') . "orders";
+
+        $response = $client->request('POST', $uri, [
+            'headers' => [
+                'content-type' => 'application/json',
+                'Authorization' => 'Bearer ' . $token,
+            ],
+            'body' => json_encode($data),
+        ]);
+
+        $body = $response->getBody();
+        return json_decode($body, true);
+    }
 }
