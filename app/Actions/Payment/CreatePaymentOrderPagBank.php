@@ -56,7 +56,7 @@ readonly class CreatePaymentOrderPagBank
                 [
                     'qr_codes' => $response['qr_codes'][0]['links'],
                     'client_token' => $client->pagbankToken,
-                    'order_id' => $response['orderId'],
+                    'order_id' => $response['id'],
                 ],
                 200
             );
