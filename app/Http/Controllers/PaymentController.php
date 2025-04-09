@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Payment\CreatePaymentOrderPagBank;
 use App\Actions\Payment\GenerateQRCode;
 use App\Actions\Payment\ReceiptPayment;
 use App\Actions\Payment\ReceiptPaymentCash;
@@ -54,5 +55,15 @@ class PaymentController
         }
 
         return (new GenerateQRCode($clientId, $machineId, $value))->run();
+    }
+
+    public function createPaymentOrderPagBank(Request $request, string $clientId): JsonResponse
+    {
+        $paymentValue = $request->get('valor');
+        if (!$paymentValue) {
+            return new JsonResponse(['status' => 'Valor não informado ou inválido!'], 400);
+        }
+
+        return (new CreatePaymentOrderPagBank($paymentValue , $clientId))->run();
     }
 }
