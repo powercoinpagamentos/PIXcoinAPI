@@ -199,7 +199,7 @@ readonly class ReceiptPaymentFromPagBank
     private function machineOffline(Maquina $machine): bool
     {
         $tempoDesdeUltimaRequisicao = abs($this->tempoOffline(Carbon::parse($machine->ultima_requisicao)));
-        return $tempoDesdeUltimaRequisicao > 20;
+        return $tempoDesdeUltimaRequisicao > 60;
     }
 
     private function tempoOffline(Carbon $data): int
