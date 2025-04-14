@@ -41,7 +41,7 @@ readonly class GetCustomer
                     ? abs($this->tempoOffline(Carbon::parse($machine->ultimo_pagamento_recebido)))
                     : PHP_INT_MAX;
 
-                $status = $tempoDesdeUltimaRequisicao > 5 ? 'OFFLINE' : 'ONLINE';
+                $status = $tempoDesdeUltimaRequisicao > 20 ? 'OFFLINE' : 'ONLINE';
 
                 if ($status === 'ONLINE' && $tempoDesdeUltimoPagamento < 60) {
                     $status = 'PAGAMENTO_RECENTE';
