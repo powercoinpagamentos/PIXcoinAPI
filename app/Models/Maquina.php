@@ -41,7 +41,13 @@ class Maquina extends Model
         'bonusPlay',
         'moves',
         'moves_count',
-        'bonus'
+        'bonus',
+        'tabledBonus',
+        'bonus_five',
+        'bonus_ten',
+        'bonus_twenty',
+        'bonus_fifty',
+        'bonus_hundred',
     ];
 
     public function pessoa(): BelongsTo

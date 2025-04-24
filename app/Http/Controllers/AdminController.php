@@ -182,6 +182,12 @@ class AdminController extends Controller
             'moves' => $request->get('moves'),
             'bonus' => $request->get('bonus'),
             'bonusPlay' => $request->get('bonusPlay'),
+            'tabledBonus' => $request->get('tabledBonus'),
+            'bonus_five' => $request->get('bonus_five'),
+            'bonus_ten' => $request->get('bonus_ten'),
+            'bonus_twenty' => $request->get('bonus_twenty'),
+            'bonus_fifty' => $request->get('bonus_fifty'),
+            'bonus_hundred' => $request->get('bonus_hundred'),
         ];
 
         return (new CreateMachine($machineData))->run();
