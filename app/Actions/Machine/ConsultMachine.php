@@ -23,6 +23,7 @@ readonly class ConsultMachine
         $currentPixValue = $machine->valor_do_pix;
 
         $this->handleBonusPlay($machine);
+        $machine = $this->handleTabledBonus($machine);
 
         if ($machine->valor_do_pix !== '0') {
             $pulso = $this->convertPixValue($machine->valor_do_pix, $machine->valorDoPulso);
@@ -60,7 +61,13 @@ readonly class ConsultMachine
                 'moves',
                 'bonus',
                 'cliente_id',
-                'id'
+                'id',
+                'tabledBonus',
+                'bonus_five',
+                'bonus_ten',
+                'bonus_twenty',
+                'bonus_fifty',
+                'bonus_hundred',
             )
             ->first();
     }
@@ -104,5 +111,42 @@ readonly class ConsultMachine
             'estornado' => false,
             'cliente_id' => $machine->cliente_id
         ]);
+    }
+
+    private function handleTabledBonus(Maquina $machine): Maquina
+    {
+        if (!$machine->tabledBonus) {
+            return $machine;
+        }
+
+        $valorPix = (float) $machine->valor_do_pix;
+
+        if ($valorPix <= 0) {
+            return $machine;
+        }
+
+        $bonusRules = [
+            100 => $machine->bonus_hundred ?? 0,
+            50 => $machine->bonus_fifty ?? 0,
+            20 => $machine->bonus_twenty ?? 0,
+            10 => $machine->bonus_ten ?? 0,
+            5 => $machine->bonus_five ?? 0
+        ];
+
+        $totalBonus = 0;
+
+        foreach ($bonusRules as $multiple => $bonus) {
+            if ($valorPix % $multiple === 0) {
+                $timesToApply = (int) ($valorPix / $multiple);
+                $totalBonus = $bonus * $timesToApply;
+                break;
+            }
+        }
+
+        if ($totalBonus > 0) {
+            $machine->valor_do_pix = (string) ($valorPix + $totalBonus);
+        }
+
+        return $machine;
     }
 }
