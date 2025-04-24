@@ -81,6 +81,12 @@ readonly class GetCustomer
                 'moves' => $machine->moves,
                 'bonus' => $machine->bonus,
                 'bonusPlay' => (bool)$machine->bonusPlay,
+                'tabledBonus' => (bool)$machine->tabledBonus,
+                'bonus_five' => $machine->bonus_five,
+                'bonus_ten' => $machine->bonus_ten,
+                'bonus_twenty' => $machine->bonus_twenty,
+                'bonus_fifty' => $machine->bonus_fifty,
+                'bonus_hundred' => $machine->bonus_hundred,
             ];
         });
     }
