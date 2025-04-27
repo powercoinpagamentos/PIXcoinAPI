@@ -24,6 +24,7 @@ use App\Actions\Report\PaymentsReport;
 use App\Actions\Report\PaymentsTaxReport;
 use App\Helpers\CustomerHelper;
 use App\Models\Cliente;
+use App\Models\Maquina;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -231,4 +232,23 @@ class MachineController extends Controller
         $value = $request->get('valor');
         return (new IncrementMachineStock($value, $machineId))->run();
     }
+
+    public function getMachineInformation(Request $request, string $machineId): JsonResponse
+    {
+        $machine = Maquina::query()
+            ->where('id', $machineId)
+            ->where('disabled', false)
+            ->select(['tempoHigh', 'tempoLow'])
+            ->first();
+
+        if (!$machine) {
+            return new JsonResponse(['error' => true], 404);
+        }
+
+        return new JsonResponse([
+            'tempoLow' => $machine->tempoLow ?: 100,
+            'tempoHigh' => $machine->tempoHigh ?: 50,
+        ]);
+    }
+
 }

@@ -53,6 +53,7 @@ Route::get('/buscar-maquininha/{codigo}', [MachineController::class, 'getLittleM
 Route::put('/alterar-maquininha/{codigo}', [MachineController::class, 'updateLittleMachine']);
 Route::delete('/deletar-maquininha/{codigo}', [MachineController::class, 'deleteLittleMachine']);
 Route::get('/is-online/{machineId}', [MachineController::class, 'isOnline']);
+Route::get('/machine-information/{machineId}', [MachineController::class, 'getMachineInformation']);
 
 Route::post('/rota-recebimento-mercado-pago-dinamica/{id}', [PaymentController::class, 'receiptPayment']);
 Route::post('/rota-recebimento-especie/{id}', [PaymentController::class, 'receiptPaymentCash']);
