@@ -21,7 +21,7 @@
 
     <p>
         Se você não solicitou a alteração de senha, por favor ignore este e-mail ou entre em contato conosco
-        através do telefone <a href="tel:+5521979832030" style="color: #0275d8;">(21) 97983-2030</a> para verificar a segurança da sua conta.
+        através do telefone <a href="tel:+5521979832030" style="color: #0853b2;">(21) 97983-2030</a> para verificar a segurança da sua conta.
     </p>
 
     <p style="text-align: center; color: #888; font-size: 0.9em;">
@@ -30,7 +30,7 @@
 
     <p style="text-align: right; font-weight: bold;">
         Atenciosamente,<br>
-        <span style="color: #0275d8;">PIXCOIN</span>
+        <span style="color: #0853b2;">PIXCOIN</span>
     </p>
 
     <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">

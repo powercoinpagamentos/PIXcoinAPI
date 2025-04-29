@@ -11,14 +11,14 @@
     <p>
         Agradecemos pela pronta regularização e reforçamos nosso compromisso em oferecer um serviço de excelência.
         Caso precise de qualquer suporte ou tenha dúvidas, nossa equipe de atendimento está à disposição através do telefone
-        <a href="tel:+5521979832030" style="color: #0275d8;">(21) 97983-2030</a>.
+        <a href="tel:+5521979832030" style="color: #0853b2;">(21) 97983-2030</a>.
     </p>
     <p style="text-align: center; color: #888; font-size: 0.9em;">
         Agradecemos por sua confiança e parceria. Estamos à disposição para continuar contribuindo com o seu sucesso.
     </p>
     <p style="text-align: right; font-weight: bold;">
         Atenciosamente,<br>
-        <span style="color: #0275d8;">PIXCOIN</span>
+        <span style="color: #0853b2;">PIXCOIN</span>
     </p>
     <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
     <p style="text-align: center; font-size: 0.8em; color: #666;">

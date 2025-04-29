@@ -21,7 +21,7 @@
         .banner {
             width: 100%;
             height: 50px;
-            background-color: #0097b2;
+            background-color: #0853b2;
             position: relative;
             color: white;
         }
@@ -32,7 +32,7 @@
         }
 
         .table th {
-            background-color: #0097b2;
+            background-color: #0853b2;
             color: white;
             border: none !important;
             text-align: left;
@@ -50,7 +50,7 @@
             text-align: center;
             width: 100%;
             height: 50px;
-            background-color: #0097b2;
+            background-color: #0853b2;
             color: white;
             position: absolute;
             bottom: 0;
@@ -68,9 +68,9 @@
 <div class="informs">
     <h2>Informações do cliente e máquina:</h2>
 
-    <h3 style="margin-bottom: 15px; border-bottom: 2px solid #0097b2;">Máquina: {{ $maquinaNome }}</h3>
-    <h3 style="margin-bottom: 15px; border-bottom: 2px solid #0097b2;">Responsável: {{ $clienteNome }}</h3>
-    <h3 style="margin-bottom: 15px; border-bottom: 2px solid #0097b2;">Data: {{ Carbon::parse($startDate)->format('d/m/Y') }} - {{ Carbon::parse($endDate)->format('d/m/Y') }}</h3>
+    <h3 style="margin-bottom: 15px; border-bottom: 2px solid #0853b2;">Máquina: {{ $maquinaNome }}</h3>
+    <h3 style="margin-bottom: 15px; border-bottom: 2px solid #0853b2;">Responsável: {{ $clienteNome }}</h3>
+    <h3 style="margin-bottom: 15px; border-bottom: 2px solid #0853b2;">Data: {{ Carbon::parse($startDate)->format('d/m/Y') }} - {{ Carbon::parse($endDate)->format('d/m/Y') }}</h3>
 </div>
 
 @if($totalSemEstorno > 0 || $totalEspecie > 0 || $totalComEstorno > 0)
@@ -81,25 +81,25 @@
             <h2>Soma de pagamentos:</h2>
         @endif
 
-        <h3  style="margin-bottom: 15px; border-bottom: 2px solid #0097b2;">Soma total entre Pix, Débito e Crédito: R$ {{ number_format($totalSemEstorno - $totalEspecie, 2, ',', '.') }}</h3>
-        <h3  style="margin-bottom: 15px; border-bottom: 2px solid #0097b2;">Soma total de Espécie: R$ {{ number_format($totalEspecie, 2, ',', '.') }}</h3>
-        <h3  style="margin-bottom: 15px; border-bottom: 2px solid #0097b2;">Soma total entre Espécie, Pix, Débito e Crédito: R$ {{ number_format($totalSemEstorno, 2, ',', '.') }}</h3>
-        <h3  style="margin-bottom: 15px; border-bottom: 2px solid #0097b2;">Soma total de estornos em Pix, Débito e Crédito: R$ {{ number_format($totalComEstorno, 2, ',', '.') }}</h3>
+        <h3  style="margin-bottom: 15px; border-bottom: 2px solid #0853b2;">Soma total entre Pix, Débito e Crédito: R$ {{ number_format($totalSemEstorno - $totalEspecie, 2, ',', '.') }}</h3>
+        <h3  style="margin-bottom: 15px; border-bottom: 2px solid #0853b2;">Soma total de Espécie: R$ {{ number_format($totalEspecie, 2, ',', '.') }}</h3>
+        <h3  style="margin-bottom: 15px; border-bottom: 2px solid #0853b2;">Soma total entre Espécie, Pix, Débito e Crédito: R$ {{ number_format($totalSemEstorno, 2, ',', '.') }}</h3>
+        <h3  style="margin-bottom: 15px; border-bottom: 2px solid #0853b2;">Soma total de estornos em Pix, Débito e Crédito: R$ {{ number_format($totalComEstorno, 2, ',', '.') }}</h3>
     </div>
 @endif
 
 @if($hasPagBank)
     <div class="content">
         <h2>Soma de pagamentos do PagSeguro:</h2>
-        <h3  style="margin-bottom: 15px; border-bottom: 2px solid #0097b2;">Soma total entre Pix, Débito e Crédito: R$ {{ number_format($pagBankTotais['totalSemEstorno'], 2, ',', '.') }}</h3>
-        <h3  style="margin-bottom: 15px; border-bottom: 2px solid #0097b2;">Soma total de estornos em Pix, Débito e Crédito: R$ {{ number_format($pagBankTotais['totalComEstorno'], 2, ',', '.') }}</h3>
+        <h3  style="margin-bottom: 15px; border-bottom: 2px solid #0853b2;">Soma total entre Pix, Débito e Crédito: R$ {{ number_format($pagBankTotais['totalSemEstorno'], 2, ',', '.') }}</h3>
+        <h3  style="margin-bottom: 15px; border-bottom: 2px solid #0853b2;">Soma total de estornos em Pix, Débito e Crédito: R$ {{ number_format($pagBankTotais['totalComEstorno'], 2, ',', '.') }}</h3>
     </div>
 
     @if($totalSemEstorno > 0  || $totalComEstorno > 0)
         <div class="content">
             <h2>Soma de pagamentos do PagSeguro + Mercado Pago:</h2>
-            <h3  style="margin-bottom: 15px; border-bottom: 2px solid #0097b2;">Soma total entre Espécie, Pix, Débito e Crédito: R$ {{ number_format($pagBankTotais['totalSemEstorno'] + $totalSemEstorno, 2, ',', '.') }}</h3>
-            <h3  style="margin-bottom: 15px; border-bottom: 2px solid #0097b2;">Soma total de estornos em Pix, Débito e Crédito: R$ {{ number_format($pagBankTotais['totalComEstorno'] + $totalComEstorno, 2, ',', '.') }}</h3>
+            <h3  style="margin-bottom: 15px; border-bottom: 2px solid #0853b2;">Soma total entre Espécie, Pix, Débito e Crédito: R$ {{ number_format($pagBankTotais['totalSemEstorno'] + $totalSemEstorno, 2, ',', '.') }}</h3>
+            <h3  style="margin-bottom: 15px; border-bottom: 2px solid #0853b2;">Soma total de estornos em Pix, Débito e Crédito: R$ {{ number_format($pagBankTotais['totalComEstorno'] + $totalComEstorno, 2, ',', '.') }}</h3>
         </div>
     @endif
 @endif

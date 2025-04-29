@@ -153,7 +153,7 @@
         .logo {
             text-align: center;
             margin-bottom: 20px;
-            color: #0275d8;
+            color: #0853b2;
             font-weight: bold;
             font-size: 1.5em;
         }
