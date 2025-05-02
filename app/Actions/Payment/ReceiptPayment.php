@@ -6,24 +6,17 @@ use App\Models\Cliente;
 use App\Models\Maquina;
 use App\Models\Pagamento;
 use App\Services\Interfaces\IDiscord;
-use App\Services\Interfaces\IPayment;
 use Carbon\Carbon;
-use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 readonly class ReceiptPayment
 {
-    private IPayment $paymentService;
     public function __construct(private string $customerId, private string $mercadoPagoId)
     {
-        $this->paymentService = resolve(IPayment::class);
     }
 
-    /**
-     * @throws GuzzleException
-     */
     public function run(): JsonResponse
     {
         // BY-PASS para validação do MP
@@ -100,8 +93,6 @@ readonly class ReceiptPayment
             Log::error('Erro ao processar transação: ' . $e->getMessage());
             return response()->json(['message' => 'Erro interno ao processar a transação.'], 500);
         }
-
-        $this->notifierDiscord($value, $customer->nome, $machine->nome);
 
         return response()->json(['message' => 'Novo pagamento registrado!', 'pago' => true]);
     }
@@ -217,21 +208,5 @@ readonly class ReceiptPayment
                 'motivo_estorno' => 'Tentativa de Golpe',
                 'estornado' => true,
             ]);
-    }
-
-    private function notifierDiscord(
-        string $value,
-        string $clientName,
-        string $machineName,
-    ): void
-    {
-        /** @var IDiscord $discordAPI */
-        $discordAPI = resolve(IDiscord::class);
-
-        $discordAPI->notificar(
-            env('NOTIFICACOES_PAGAMENTOS'),
-            "Novo pagamento recebido no Mercado Pago. R$ $value",
-            "Cliente $clientName - Máquina: $machineName",
-        );
     }
 }

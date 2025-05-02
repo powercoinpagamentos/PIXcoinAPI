@@ -113,8 +113,6 @@ readonly class ReceiptPaymentFromPagBank
             return response()->json(['message' => 'Erro interno ao processar a transação.'], 500);
         }
 
-        $this->notifierDiscord($value, $client->nome, $machine->nome);
-
         return response()->json(['message' => 'Novo pagamento registrado!']);
     }
 
@@ -221,21 +219,5 @@ readonly class ReceiptPaymentFromPagBank
         ];
 
         return $map[$paymentTypeId] ?? '';
-    }
-
-    private function notifierDiscord(
-        string $value,
-        string $clientName,
-        string $machineName,
-    ): void
-    {
-        /** @var IDiscord $discordAPI */
-        $discordAPI = resolve(IDiscord::class);
-
-        $discordAPI->notificar(
-            env('NOTIFICACOES_PAGAMENTOS'),
-            "Novo pagamento recebido no PagBank. R$ $value",
-            "Cliente $clientName - Máquina: $machineName",
-        );
     }
 }
