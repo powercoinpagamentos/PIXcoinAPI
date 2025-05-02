@@ -5,7 +5,7 @@ namespace App\Actions\Payment;
 use App\Models\Cliente;
 use App\Models\Maquina;
 use App\Models\Pagamento;
-use App\Services\Interfaces\IDiscord;
+use App\Services\Interfaces\IPayment;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
@@ -13,8 +13,10 @@ use Illuminate\Support\Facades\Log;
 
 readonly class ReceiptPayment
 {
+    private IPayment $paymentService;
     public function __construct(private string $customerId, private string $mercadoPagoId)
     {
+        $this->paymentService = resolve(IPayment::class);
     }
 
     public function run(): JsonResponse
