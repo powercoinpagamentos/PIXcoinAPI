@@ -21,6 +21,10 @@ readonly class AddRemoteCredit
             return response()->json(['msg' => 'MÁQUINA OFFLINE!'], 400);
         }
 
+        if ((float) $this->value < $machine->valorDoPulso) {
+            return response()->json(['msg' => "Valor do pulso abaixo do configurado. Valor configurado: $machine->valorDoPulso"], 400);
+        }
+
         $machine->update([
             'ultimo_pagamento_recebido' => now(),
             'valor_do_pix' => $this->value
