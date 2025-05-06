@@ -44,7 +44,11 @@ readonly class ReceiptPayment
 
         $machine = $this->getMachine($customer, $storeId);
 
-        if (!$machine || (bool)$machine->disabled) {
+        if (!$storeId || is_null($machine)) {
+            return new JsonResponse(['message' => "Máquina não possui store id cadastrado ou esse pagamento não é de uma máquina", 'pago' => true]);
+        }
+
+        if ((bool)$machine->disabled) {
             return $this->reversal(
                 $customer->mercadoPagoToken,
                 $machine->id ?? '',
