@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ArduinoController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\MachineController;
@@ -66,3 +67,5 @@ Route::post('/decrementar-estoque/{machineId}', [MachineController::class, 'decr
 Route::post('/setar-estoque/{machineId}', [MachineController::class, 'incrementStock']);
 
 Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink']);
+
+Route::post('/machine/{machineId}/{command}', [ArduinoController::class, 'executeCommand']);
