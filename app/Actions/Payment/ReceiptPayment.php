@@ -31,6 +31,8 @@ readonly class ReceiptPayment
             return response()->json(['error' => 'Cliente não encontrado', 'pago' => false], 404);
         }
 
+        sleep(5);
+
         $payment = $this->getPaymentsFromMP($customer->mercadoPagoToken);
 
         if ($payment['status'] !== 'approved') {
