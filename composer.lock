@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "518401bb90ea9157a28b263cf5e87134",
+    "content-hash": "00d4c572e203ad650a47463ac132bed0",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -82,6 +82,46 @@
                 }
             ],
             "time": "2024-07-31T14:45:16+00:00"
+        },
+        {
+            "name": "bluerhinos/phpmqtt",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bluerhinos/phpMQTT.git",
+                "reference": "fe4b6b2fe3d1b651fe1456e147ad4f044fa70603"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bluerhinos/phpMQTT/zipball/fe4b6b2fe3d1b651fe1456e147ad4f044fa70603",
+                "reference": "fe4b6b2fe3d1b651fe1456e147ad4f044fa70603",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Bluerhinos\\": "./"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD"
+            ],
+            "authors": [
+                {
+                    "name": "Andrew Milsted",
+                    "email": "andrew@bluerhinos.co.uk"
+                }
+            ],
+            "description": "Simple MQTT Class",
+            "support": {
+                "issues": "https://github.com/bluerhinos/phpMQTT/issues",
+                "source": "https://github.com/bluerhinos/phpMQTT/tree/1.0.1"
+            },
+            "time": "2021-08-21T18:25:12+00:00"
         },
         {
             "name": "brick/math",
@@ -8625,7 +8665,8 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8"
+        "php": "^8.3",
+        "ext-simplexml": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "2.6.0"
