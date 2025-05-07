@@ -79,14 +79,21 @@ readonly class ConsultMachine
         $machine->save();
     }
 
-    private function convertPixValue(float|string $valorPix, float $valorDoPulso): string
+    private function convertPixValue(float|string $pixValue, float $pulseValue): string
     {
-        if ((float)$valorPix <= 0 || $valorDoPulso <= 0 || (float)$valorPix < $valorDoPulso) {
-            return "0000";
+        $numericPixValue = (float) $pixValue;
+
+        if ($numericPixValue <= 0 || $pulseValue <= 0) {
+            return '0000';
         }
 
-        $credits = floor((float)$valorPix / $valorDoPulso);
-        return str_pad((string)$credits, 4, "0", STR_PAD_LEFT);
+        if ($numericPixValue < $pulseValue) {
+            return '0000';
+        }
+
+        $credits = (int) floor($numericPixValue / $pulseValue);
+
+        return str_pad((string) $credits, 4, '0', STR_PAD_LEFT);
     }
 
     private function handleBonusPlay(Maquina $machine): void
