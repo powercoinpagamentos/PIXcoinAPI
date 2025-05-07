@@ -31,33 +31,10 @@ readonly class ReceiptPayment
             return response()->json(['error' => 'Cliente não encontrado', 'pago' => false], 404);
         }
 
-        $maxAttempts = 10;
-        $attempt = 0;
-        $payment = null;
-
-        do {
-            $attempt++;
-
-            $payment = $this->getPaymentsFromMP($customer->mercadoPagoToken);
-
-            if ($payment['status'] === 'approved') {
-                break;
-            }
-
-            if ($payment['status'] !== 'pending') {
-                return new JsonResponse([
-                    'message' => "Pagamento com status: " . $payment['status'],
-                    'pago' => false
-                ]);
-            }
-
-        } while ($attempt < $maxAttempts);
+        $payment = $this->getPaymentsFromMP($customer->mercadoPagoToken);
 
         if ($payment['status'] !== 'approved') {
-            return new JsonResponse([
-                'message' => "Pagamento ainda não aprovado após várias tentativas",
-                'pago' => false
-            ]);
+            return new JsonResponse(['message' => "Pagamento ainda não realizado", 'pago' => false]);
         }
 
         $storeId = $payment['store_id'] ?? '';
@@ -228,14 +205,5 @@ readonly class ReceiptPayment
     private function existingPayment(Maquina $machine): bool
     {
         return $machine->pagamentos()->where('mercadoPagoId', $this->mercadoPagoId)->exists();
-    }
-
-    private function handleTramoia(): void
-    {
-        Pagamento::where('mercadoPagoId', $this->mercadoPagoId)
-            ->update([
-                'motivo_estorno' => 'Tentativa de Golpe',
-                'estornado' => true,
-            ]);
     }
 }
