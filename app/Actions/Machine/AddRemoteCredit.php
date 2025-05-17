@@ -27,7 +27,8 @@ readonly class AddRemoteCredit
 
         $machine->update([
             'ultimo_pagamento_recebido' => now(),
-            'valor_do_pix' => $this->value
+            'valor_do_pix' => $this->value,
+            'is_remote_credit' => true,
         ]);
 
         $this->createPayment($machine->id, $this->value, $machine->cliente_id);

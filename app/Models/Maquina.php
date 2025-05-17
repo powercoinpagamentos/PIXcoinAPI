@@ -48,6 +48,7 @@ class Maquina extends Model
         'bonus_twenty',
         'bonus_fifty',
         'bonus_hundred',
+        'is_remote_credit'
     ];
 
     public function pessoa(): BelongsTo
