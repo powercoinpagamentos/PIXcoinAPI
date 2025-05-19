@@ -48,9 +48,9 @@ readonly class GetAllMachines
                     ? abs($this->tempoOffline(Carbon::parse($machine->ultimo_pagamento_recebido)))
                     : PHP_INT_MAX;
 
-                $status = $tempoDesdeUltimaRequisicao > 60 ? 'OFFLINE' : 'ONLINE';
+                $status = $tempoDesdeUltimaRequisicao > 15 ? 'OFFLINE' : 'ONLINE';
 
-                if ($status === 'ONLINE' && $tempoDesdeUltimoPagamento < 60) {
+                if ($status === 'ONLINE' && $tempoDesdeUltimoPagamento < 15) {
                     $status = 'PAGAMENTO_RECENTE';
                 }
             }
