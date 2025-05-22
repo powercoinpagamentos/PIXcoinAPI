@@ -31,10 +31,33 @@ readonly class ReceiptPayment
             return response()->json(['error' => 'Cliente não encontrado', 'pago' => false], 404);
         }
 
-        $payment = $this->getPaymentsFromMP($customer->mercadoPagoToken);
+        $maxAttempts = 50;
+        $attempt = 0;
+        $payment = null;
+
+        do {
+            $attempt++;
+
+            $payment = $this->getPaymentsFromMP($customer->mercadoPagoToken);
+
+            if ($payment['status'] === 'approved') {
+                break;
+            }
+
+            if ($payment['status'] !== 'pending') {
+                return new JsonResponse([
+                    'message' => "Pagamento com status: " . $payment['status'],
+                    'pago' => false
+                ]);
+            }
+
+        } while ($attempt < $maxAttempts);
 
         if ($payment['status'] !== 'approved') {
-            return new JsonResponse(['message' => "Pagamento ainda não realizado", 'pago' => false]);
+            return new JsonResponse([
+                'message' => "Pagamento ainda não aprovado após várias tentativas",
+                'pago' => false
+            ]);
         }
 
         $storeId = $payment['store_id'] ?? '';
