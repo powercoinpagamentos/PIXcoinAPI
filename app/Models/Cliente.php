@@ -22,6 +22,10 @@ class Cliente extends Model
 
     protected $table = 'clientes';
 
+    protected $casts = [
+        'maquinas_ids' => 'array',
+    ];
+
     protected $fillable = [
         'nome',
         'email',
@@ -38,7 +42,8 @@ class Cliente extends Model
         'can_delete_payments',
         'can_add_remote_credit',
         'can_add_edit_machine',
-        'is_employee'
+        'is_employee',
+        'maquinas_ids'
     ];
 
     public function pessoa(): BelongsTo

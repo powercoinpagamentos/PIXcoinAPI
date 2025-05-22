@@ -55,6 +55,7 @@ class CustomerController extends Controller
             'can_add_remote_credit' => $request->get('canAddCredit') === 'null' ? 0 : 1,
             'can_add_edit_machine' => $request->get('canEditMachine') === 'null' ? 0 : 1,
             'is_employee' => 1,
+            'maquinas_ids' => $request->get('machinesIds'),
         ]);
     }
 

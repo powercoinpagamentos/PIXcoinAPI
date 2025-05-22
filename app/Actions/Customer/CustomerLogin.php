@@ -51,6 +51,7 @@ readonly class CustomerLogin
             'canAddRemoteCredit' => (bool)$customer->can_add_remote_credit,
             'canEditMachine' => (bool)$customer->can_add_edit_machine,
             'parent_id' => $customer->parent_id ?? null,
+            'maquinas_id' => $customer->maquinas_ids
         ]);
     }
 
