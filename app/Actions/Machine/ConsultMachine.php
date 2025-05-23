@@ -32,6 +32,8 @@ readonly class ConsultMachine
                 $machine->is_remote_credit = false;
                 $machine->save();
 
+                DB::commit();
+
                 return response()->json([
                     'retorno' => $pulso,
                     'tempoLow' => $machine->tempoLow,
