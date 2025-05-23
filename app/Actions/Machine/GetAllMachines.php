@@ -7,7 +7,6 @@ use App\Models\Maquina;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
 
 readonly class GetAllMachines
 {
@@ -17,27 +16,16 @@ readonly class GetAllMachines
 
     public function run(): JsonResponse
     {
-        DB::beginTransaction();
+        $machines = $this->getMachines();
+        if ($machines->isEmpty()) {
+            return response()->json([], 404);
+        }
 
         try {
-            $machines = $this->getMachines();
-
-            if ($machines->isEmpty()) {
-                DB::rollBack();
-                DB::disconnect();
-                return response()->json([], 404);
-            }
-
             $machinesWithStatus = $this->machinesWithStatus($machines);
 
-            DB::commit();
-            DB::disconnect();
-
             return response()->json($machinesWithStatus);
-
         } catch (\Throwable $th) {
-            DB::rollBack();
-            DB::disconnect();
             return response()->json(['error' => $th->getMessage()], 500);
         }
     }
@@ -51,39 +39,31 @@ readonly class GetAllMachines
 
     private function machinesWithStatus(Collection $machines): Collection|\Illuminate\Support\Collection
     {
-        $paymentHelper = new PaymentHelper();
-
-        return $machines->map(function (Maquina $machine) use ($paymentHelper) {
+        return $machines->map(function (Maquina $machine) {
             $status = 'OFFLINE';
-            $now = Carbon::now();
 
             if ($machine->ultima_requisicao) {
-                $lastRequestTime = Carbon::parse($machine->ultima_requisicao);
-                $tempoDesdeUltimaRequisicao = $now->diffInSeconds($lastRequestTime);
+                $tempoDesdeUltimaRequisicao = abs($this->tempoOffline(Carbon::parse($machine->ultima_requisicao)));
+                $tempoDesdeUltimoPagamento = $machine->ultimo_pagamento_recebido
+                    ? abs($this->tempoOffline(Carbon::parse($machine->ultimo_pagamento_recebido)))
+                    : PHP_INT_MAX;
 
                 $status = $tempoDesdeUltimaRequisicao > 30 ? 'OFFLINE' : 'ONLINE';
 
-                if ($status === 'ONLINE' && $machine->ultimo_pagamento_recebido) {
-                    $lastPaymentTime = Carbon::parse($machine->ultimo_pagamento_recebido);
-                    $tempoDesdeUltimoPagamento = $now->diffInSeconds($lastPaymentTime);
-
-                    if ($tempoDesdeUltimoPagamento < 30) {
-                        $status = 'PAGAMENTO_RECENTE';
-                    }
+                if ($status === 'ONLINE' && $tempoDesdeUltimoPagamento < 30) {
+                    $status = 'PAGAMENTO_RECENTE';
                 }
             }
 
-            $pagamentosDaMaquina = $machine->pagamentos()->orderBy('data', 'desc')->get();
-            $totais = $paymentHelper->getTotalPayments($pagamentosDaMaquina);
+            $pagamentosDaMaquina = $machine->pagamentos()
+                ->orderBy('data', 'desc')
+                ->get();
 
-            $pagBankTotais = $totais['pagBankTotais'] ?? [];
-            $totalSemEstorno = empty($pagBankTotais)
-                ? $totais['totalSemEstorno']
-                : $totais['totalSemEstorno'] + $pagBankTotais['totalSemEstorno'];
+            $totais = (new PaymentHelper())->getTotalPayments($pagamentosDaMaquina);
 
-            $totalComEstorno = empty($pagBankTotais)
-                ? $totais['totalComEstorno']
-                : $totais['totalComEstorno'] + $pagBankTotais['totalComEstorno'];
+            $pagBankTotais = $totais['pagBankTotais'];
+            $totalSemEstorno = empty($pagBankTotais) ? $totais['totalSemEstorno'] : $totais['totalSemEstorno'] + $pagBankTotais['totalSemEstorno'];
+            $totalComEstorno = empty($pagBankTotais) ? $totais['totalComEstorno'] : $totais['totalComEstorno'] + $pagBankTotais['totalComEstorno'];
 
             return [
                 'id' => $machine->id,
@@ -117,5 +97,10 @@ readonly class GetAllMachines
                 'bonus_hundred' => $machine->bonus_hundred,
             ];
         });
+    }
+
+    public function tempoOffline(Carbon $data): int
+    {
+        return Carbon::now()->diffInSeconds($data);
     }
 }
