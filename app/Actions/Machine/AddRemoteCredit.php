@@ -5,7 +5,10 @@ namespace App\Actions\Machine;
 use App\Models\Maquina;
 use App\Models\Pagamento;
 use Carbon\Carbon;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 readonly class AddRemoteCredit
 {
@@ -15,13 +18,24 @@ readonly class AddRemoteCredit
 
     public function run(): JsonResponse
     {
+        DB::beginTransaction();
         $machine = $this->getMachine();
 
+        if (!$machine) {
+            DB::rollBack();
+            DB::disconnect();
+            return response()->json(['msg' => 'Falha na operação - Entre em contato com o suporte!'], 400);
+        }
+
         if ($this->machineOffline($machine)) {
+            DB::rollBack();
+            DB::disconnect();
             return response()->json(['msg' => 'MÁQUINA OFFLINE!'], 400);
         }
 
         if ((float) $this->value < $machine->valorDoPulso) {
+            DB::rollBack();
+            DB::disconnect();
             return response()->json(['msg' => "Valor do pulso abaixo do configurado. Valor configurado: $machine->valorDoPulso"], 400);
         }
 
@@ -33,12 +47,20 @@ readonly class AddRemoteCredit
 
         $this->createPayment($machine->id, $this->value, $machine->cliente_id);
 
+        DB::commit();
+        DB::disconnect();
+
         return response()->json(['retorno' => 'CREDITO INSERIDO']);
     }
 
-    private function getMachine()
+    private function getMachine(): ?Maquina
     {
-        return Maquina::query()->find($this->id);
+        try {
+            return Maquina::query()->find($this->id);
+        } catch (QueryException $exception) {
+            Log::error("Falha ao obter máquina para crédito remoto: " . $exception->getMessage());
+            return null;
+        }
     }
 
     private function machineOffline(Maquina $machine): bool
