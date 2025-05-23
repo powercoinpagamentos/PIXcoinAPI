@@ -21,6 +21,8 @@ readonly class ConsultMachine
         try {
             $machine = $this->getMachine();
             if (!$machine) {
+                DB::rollBack();
+                DB::disconnect();
                 return response()->json(['retorno' => '0000']);
             }
 
@@ -33,6 +35,7 @@ readonly class ConsultMachine
                 $machine->save();
 
                 DB::commit();
+                DB::disconnect();
 
                 return response()->json([
                     'retorno' => $pulso,
@@ -62,6 +65,7 @@ readonly class ConsultMachine
             $this->updateMachine($machine);
 
             DB::commit();
+            DB::disconnect();
 
             return response()->json([
                 'retorno' => $pulso,
@@ -70,6 +74,7 @@ readonly class ConsultMachine
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
+            DB::disconnect();
             Log::error("Erro em ConsultMachine: " . $e->getMessage());
             return response()->json(['retorno' => '0000']);
         }
