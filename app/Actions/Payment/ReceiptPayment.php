@@ -67,8 +67,6 @@ readonly class ReceiptPayment
             DB::rollBack();
             Log::error('Erro ao processar pagamento: ' . $e->getMessage());
             return response()->json(['message' => 'Erro interno ao processar o pagamento.'], 500);
-        } finally {
-            DB::disconnect();
         }
     }
 
