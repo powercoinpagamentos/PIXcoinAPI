@@ -26,6 +26,21 @@ readonly class ConsultMachine
                 return response()->json(['retorno' => '0000']);
             }
 
+            $currentPixValue = $machine->valor_do_pix;
+            if ($currentPixValue === "0") {
+                $machine->ultima_requisicao = now();
+                $machine->save();
+
+                DB::commit();
+                DB::disconnect();
+
+                return response()->json([
+                    'retorno' => "0000",
+                    'tempoLow' => $machine->tempoLow,
+                    'tempoHigh' => $machine->tempoHigh,
+                ]);
+            }
+
             if ($machine->is_remote_credit) {
                 $pulso = $this->convertPixValue($machine->valor_do_pix, $machine->valorDoPulso);
 
@@ -45,7 +60,6 @@ readonly class ConsultMachine
             }
 
             $pulso = '0000';
-            $currentPixValue = $machine->valor_do_pix;
 
             $this->handleBonusPlay($machine);
             $machine = $this->handleTabledBonus($machine);
