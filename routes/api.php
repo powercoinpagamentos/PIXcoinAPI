@@ -69,3 +69,4 @@ Route::post('/setar-estoque/{machineId}', [MachineController::class, 'incrementS
 Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink']);
 
 Route::post('/machine/{machineId}/{command}', [ArduinoController::class, 'executeCommand']);
+Route::get('/update-firmware/{machineId}', [ArduinoController::class, 'getArduinoCode']);
