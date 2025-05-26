@@ -29,6 +29,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
@@ -146,8 +147,17 @@ class AdminController extends Controller
             return response()->json(['error' => 'Usuário sem autorização.'], 401);
         }
 
+        $binData = $request->get('binFile');
+        if (!is_null($binData)) {
+            $fileData = base64_decode($binData['data']);
+            $fileName = $binData['name'];
+
+            Storage::put("{$request->get('id')}/{$fileName}", $fileData);
+        }
+
         $machineData = $request->all();
         Arr::forget($machineData, 'id');
+        Arr::forget($machineData, 'binFile');
 
         return (new UpdateMachine($machineData, $request->get('id')))->run();
     }
