@@ -7,6 +7,7 @@ use App\Models\Maquina;
 use App\Models\Pagamento;
 use App\Services\Interfaces\IPayment;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -24,12 +25,9 @@ readonly class ReceiptPayment
 
     public function run(): JsonResponse
     {
-        // BY-PASS para validação do MP
         if ($this->mercadoPagoId === '123456') {
             return response()->json(['status' => 'ok', 'pago' => true]);
         }
-
-        DB::beginTransaction();
 
         try {
             $customer = $this->getCustomer();
@@ -40,7 +38,6 @@ readonly class ReceiptPayment
 
             $payment = $this->checkPaymentStatus($customer->mercadoPagoToken);
             if (!$payment['approved']) {
-                DB::rollBack();
                 return new JsonResponse($payment['response']);
             }
 
@@ -54,17 +51,13 @@ readonly class ReceiptPayment
 
             $validationResponse = $this->validatePayment($machine, $value, $customer->mercadoPagoToken, $paymentType);
             if ($validationResponse) {
-                DB::rollBack();
                 return $validationResponse;
             }
 
             $this->processPayment($machine, $value, $paymentType, $operationTax);
-
-            DB::commit();
             return response()->json(['message' => 'Novo pagamento registrado!', 'pago' => true]);
 
         } catch (\Exception $e) {
-            DB::rollBack();
             Log::error('Erro ao processar pagamento: ' . $e->getMessage());
             return response()->json(['message' => 'Erro interno ao processar o pagamento.'], 500);
         }
@@ -153,16 +146,22 @@ readonly class ReceiptPayment
 
     private function processPayment(Maquina $machine, float $value, string $paymentType, string $operationTax): void
     {
-        $this->createPayment(
-            $machine->id,
-            $value,
-            false,
-            $paymentType,
-            $this->customerId,
-            $operationTax
-        );
+        try {
+            DB::transaction(function () use ($machine, $value, $paymentType, $operationTax) {
+                $this->createPayment(
+                    $machine->id,
+                    $value,
+                    false,
+                    $paymentType,
+                    $this->customerId,
+                    $operationTax
+                );
 
-        $this->updateMachine($machine->id, $value);
+                $this->updateMachine($machine->id, $value);
+            });
+        } catch (Exception $exception) {
+            Log::error('Erro ao criar pagamento telemetria ou atualizar maquina: ' . $exception->getMessage());
+        }
     }
 
     private function getCustomer(): ?Cliente
