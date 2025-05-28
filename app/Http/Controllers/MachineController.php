@@ -59,6 +59,7 @@ class MachineController extends Controller
 
         $machineData = $request->all();
         Arr::forget($machineData, 'id');
+        Arr::forget($machineData, 'binFile');
 
         return (new UpdateMachine($machineData, $request->get('id')))->run();
     }
