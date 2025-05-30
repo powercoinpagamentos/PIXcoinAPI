@@ -70,7 +70,7 @@ readonly class ConsultMachine
 
             $this->updateMachine($machine);
 
-            Log::info("ENTROU PIX AEEEE");
+            Log::info("[ConsultMachine]: pagamento com sucesso no valor de $pulso para o cliente $machine->cliente_id na máquina $machine->id");
             return response()->json([
                 'retorno' => $pulso,
                 'tempoLow' => $machine->tempoLow,
