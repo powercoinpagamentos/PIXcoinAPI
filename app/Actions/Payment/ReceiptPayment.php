@@ -101,6 +101,7 @@ readonly class ReceiptPayment
     private function validatePayment(?Maquina $machine, float $value, string $clientToken, string $paymentType): ?JsonResponse
     {
         if (!$machine || !$machine->store_id) {
+            Log::error("[DEV]: Máquina sem store id");
             return new JsonResponse([
                 'message' => "Máquina não possui store id cadastrado ou esse pagamento não é de uma máquina",
                 'pago' => true
@@ -108,6 +109,7 @@ readonly class ReceiptPayment
         }
 
         if ((bool)$machine->disabled) {
+            Log::error("[DEV]: Máquina desabilitada - machineID: $machine->id");
             return $this->reversal(
                 $clientToken,
                 $machine->id,
@@ -122,6 +124,7 @@ readonly class ReceiptPayment
         }
 
         if ($this->machineOffline($machine)) {
+            Log::error("[DEV]: Máquina offline - estorno - machineID: $machine->id");
             return $this->reversal(
                 $clientToken,
                 $machine->id,
@@ -132,6 +135,7 @@ readonly class ReceiptPayment
         }
 
         if ($this->lesserThanMinTicket($value, $machine->valorDoPulso)) {
+            Log::error("[DEV]: pagamento abaixo do ticket: $machine->valorDoPulso - estorno - machineID: $machine->id");
             return $this->reversal(
                 $clientToken,
                 $machine->id,
