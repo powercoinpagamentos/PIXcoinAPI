@@ -70,6 +70,7 @@ readonly class ConsultMachine
 
             $this->updateMachine($machine);
 
+            Log::info("ENTROU PIX AEEEE");
             return response()->json([
                 'retorno' => $pulso,
                 'tempoLow' => $machine->tempoLow,
