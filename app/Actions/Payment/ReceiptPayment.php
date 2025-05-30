@@ -101,7 +101,8 @@ readonly class ReceiptPayment
     private function validatePayment(?Maquina $machine, float $value, string $clientToken, string $paymentType): ?JsonResponse
     {
         if (!$machine || !$machine->store_id) {
-            Log::error("[DEV]: Máquina sem store id");
+            $machineId = $machine->id ?? '';
+            Log::error("[DEV]: Máquina sem store id ou má cadastrada. ID-Máquina: $machineId");
             return new JsonResponse([
                 'message' => "Máquina não possui store id cadastrado ou esse pagamento não é de uma máquina",
                 'pago' => true
