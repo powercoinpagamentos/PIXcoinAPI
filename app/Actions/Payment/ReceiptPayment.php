@@ -16,7 +16,7 @@ readonly class ReceiptPayment
 {
     private IPayment $paymentService;
     private const MAX_ATTEMPTS = 50;
-    private const OFFLINE_THRESHOLD = 30;
+    private const OFFLINE_THRESHOLD = 60;
 
     public function __construct(private string $customerId, private string $mercadoPagoId)
     {
@@ -239,8 +239,6 @@ readonly class ReceiptPayment
 
     private function machineOffline(Maquina $machine): bool
     {
-        if (!$machine->ultima_requisicao) return true;
-
         return Carbon::now()->diffInSeconds(Carbon::parse($machine->ultima_requisicao)) > self::OFFLINE_THRESHOLD;
     }
 

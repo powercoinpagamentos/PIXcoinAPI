@@ -71,7 +71,7 @@ readonly class AddRemoteCredit
                 ? abs($this->tempoOffline(Carbon::parse($machine->ultimo_pagamento_recebido)))
                 : PHP_INT_MAX;
 
-            $status = $tempoDesdeUltimaRequisicao > 30 ? 'OFFLINE' : 'ONLINE';
+            $status = $tempoDesdeUltimaRequisicao > 60 ? 'OFFLINE' : 'ONLINE';
 
             if ($status === 'ONLINE' && $tempoDesdeUltimoPagamento < 30) {
                 $status = 'PAGAMENTO_RECENTE';

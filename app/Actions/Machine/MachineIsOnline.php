@@ -26,7 +26,7 @@ readonly class MachineIsOnline
 
         $timeFromLastRequest = abs($this->tempoOffline(Carbon::parse($machine->ultima_requisicao)));
 
-        $status = $timeFromLastRequest > 5 ? 'OFFLINE' : 'ONLINE';
+        $status = $timeFromLastRequest > 60 ? 'OFFLINE' : 'ONLINE';
 
         return response()->json(['idMaquina' => $this->machineId, 'status' => $status]);
     }
