@@ -6,7 +6,6 @@ use App\Models\Maquina;
 use App\Models\Pagamento;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 readonly class ConsultMachine
@@ -17,12 +16,10 @@ readonly class ConsultMachine
 
     public function run(): JsonResponse
     {
-        DB::beginTransaction();
         try {
             $machine = $this->getMachine();
             if (!$machine) {
-                DB::rollBack();
-                DB::disconnect();
+                Log::error("[ConsultMachine]: Máquina não encontrada.");
                 return response()->json(['retorno' => '0000']);
             }
 
@@ -30,9 +27,6 @@ readonly class ConsultMachine
             if ($currentPixValue === "0") {
                 $machine->ultima_requisicao = now();
                 $machine->save();
-
-                DB::commit();
-                DB::disconnect();
 
                 return response()->json([
                     'retorno' => "0000",
@@ -49,9 +43,7 @@ readonly class ConsultMachine
                 $machine->is_remote_credit = false;
                 $machine->save();
 
-                DB::commit();
-                DB::disconnect();
-
+                Log::info("[ConsultMachine]: Jogada de crédito remoto na máquina: $machine->id do cliente $machine->cliente_id");
                 return response()->json([
                     'retorno' => $pulso,
                     'tempoLow' => $machine->tempoLow,
@@ -78,18 +70,13 @@ readonly class ConsultMachine
 
             $this->updateMachine($machine);
 
-            DB::commit();
-            DB::disconnect();
-
             return response()->json([
                 'retorno' => $pulso,
                 'tempoLow' => $machine->tempoLow,
                 'tempoHigh' => $machine->tempoHigh,
             ]);
         } catch (\Exception $e) {
-            DB::rollBack();
-            DB::disconnect();
-            Log::error("Erro em ConsultMachine: " . $e->getMessage());
+            Log::error("[ConsultMachine]: Erro: " . $e->getMessage());
             return response()->json(['retorno' => '0000']);
         }
     }

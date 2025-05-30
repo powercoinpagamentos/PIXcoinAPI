@@ -7,7 +7,6 @@ use App\Models\Pagamento;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 readonly class AddRemoteCredit
@@ -18,24 +17,20 @@ readonly class AddRemoteCredit
 
     public function run(): JsonResponse
     {
-        DB::beginTransaction();
         $machine = $this->getMachine();
 
         if (!$machine) {
-            DB::rollBack();
-            DB::disconnect();
+            Log::info("[AddRemoteCredit]: Máquina não encontrada");
             return response()->json(['msg' => 'Falha na operação - Entre em contato com o suporte!'], 400);
         }
 
         if ($this->machineOffline($machine)) {
-            DB::rollBack();
-            DB::disconnect();
+            Log::info("[AddRemoteCredit]: Máquina offline. ID: $machine->id - cliente: $machine->cliente_id");
             return response()->json(['msg' => 'MÁQUINA OFFLINE!'], 400);
         }
 
         if ((float) $this->value < $machine->valorDoPulso) {
-            DB::rollBack();
-            DB::disconnect();
+            Log::info("[AddRemoteCredit]: Valor abaixo do cadastrado. ID: $machine->id - cliente: $machine->cliente_id");
             return response()->json(['msg' => "Valor do pulso abaixo do configurado. Valor configurado: $machine->valorDoPulso"], 400);
         }
 
@@ -46,9 +41,6 @@ readonly class AddRemoteCredit
         ]);
 
         $this->createPayment($machine->id, $this->value, $machine->cliente_id);
-
-        DB::commit();
-        DB::disconnect();
 
         return response()->json(['retorno' => 'CREDITO INSERIDO']);
     }
@@ -65,27 +57,17 @@ readonly class AddRemoteCredit
 
     private function machineOffline(Maquina $machine): bool
     {
-        if ($machine->ultima_requisicao) {
-            $tempoDesdeUltimaRequisicao = abs($this->tempoOffline(Carbon::parse($machine->ultima_requisicao)));
-            $tempoDesdeUltimoPagamento = $machine->ultimo_pagamento_recebido
-                ? abs($this->tempoOffline(Carbon::parse($machine->ultimo_pagamento_recebido)))
-                : PHP_INT_MAX;
-
-            $status = $tempoDesdeUltimaRequisicao > 60 ? 'OFFLINE' : 'ONLINE';
-
-            if ($status === 'ONLINE' && $tempoDesdeUltimoPagamento < 30) {
-                $status = 'PAGAMENTO_RECENTE';
-            }
-
-            return $status === 'OFFLINE';
+        if (!$machine->ultima_requisicao) {
+            return true;
         }
 
-        return true;
+        $segundosDesdeUltimaRequisicao = $this->tempoOffline(Carbon::parse($machine->ultima_requisicao));
+        return $segundosDesdeUltimaRequisicao > 60;
     }
 
-    private function tempoOffline(Carbon $data): int
+    private function tempoOffline(Carbon $dataUltimaRequisicao): int
     {
-        return Carbon::now()->diffInSeconds($data);
+        return Carbon::now()->diffInSeconds($dataUltimaRequisicao);
     }
 
     private function createPayment(string $machineId, string $value, string $clientId): void
