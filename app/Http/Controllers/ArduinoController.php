@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Client\Response;
 use Illuminate\Http\JsonResponse;
 use Bluerhinos\phpMQTT;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -26,6 +27,7 @@ class ArduinoController extends Controller
             $mqtt->publish($topic, $message, 0);
             $mqtt->close();
 
+            Log::info("[ArduinoController]: Envio de comando: $command para a máquina: $maquinaId");
             return response()->json(['status' => 'sucesso', 'message' => 'Comando enviado']);
         }
 
@@ -54,6 +56,8 @@ class ArduinoController extends Controller
             'Connection' => 'close',
             'Content-Disposition' => 'attachment; filename="pixcoin.ino.bin"',
         ];
+
+        Log::info("[ArduinoController]: Obtenção de código para a máquina: $machineId");
 
         return response()->stream(function () use ($firmwarePath, $machineId) {
             $handle = fopen($firmwarePath, 'rb');
