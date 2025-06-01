@@ -33,7 +33,7 @@ class ArduinoController extends Controller
 
         return response()->json(['status' => 'error', 'message' => 'Falha na conexão MQTT'], 500);
     }
-    public function getArduinoCode(string $machineId): BinaryFileResponse|JsonResponse
+    public function getArduinoCode(string $machineId): StreamedResponse
     {
         try {
             $firmwarePath = storage_path("app/public/$machineId/pixcoin.ino.bin");
@@ -52,8 +52,17 @@ class ArduinoController extends Controller
 
             Log::info("[ArduinoController]: Obtenção de código para a máquina: $machineId");
 
-            return response()->download($firmwarePath, 'pixcoin.ino.bin', [
+            return response()->stream(function () use ($firmwarePath) {
+                $stream = fopen($firmwarePath, 'rb');
+                while (!feof($stream)) {
+                    echo fread($stream, 8192);
+                    flush();
+                }
+                fclose($stream);
+            }, 200, [
                 'Content-Type' => 'application/x-binary',
+                'Content-Disposition' => 'attachment; filename="pixcoin.ino.bin"',
+                'Content-Length' => $fileSize,
                 'Cache-Control' => 'no-cache, no-store, must-revalidate',
                 'Pragma' => 'no-cache',
                 'Expires' => '0',
