@@ -67,6 +67,11 @@ class ArduinoController extends Controller
             return response()->stream(function () use ($firmwarePath, $machineId) {
                 Log::info("[ArduinoController]: Abrindo arquivo em $firmwarePath");
                 $handle = fopen($firmwarePath, 'rb');
+                if (!$handle) {
+                    Log::error("[ArduinoController]: Falha ao abrir arquivo $firmwarePath");
+                    return;
+                }
+
                 while (!feof($handle)) {
                     echo fread($handle, 8192);
                     flush();
