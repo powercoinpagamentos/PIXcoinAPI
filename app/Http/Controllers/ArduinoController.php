@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Bluerhinos\phpMQTT;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ArduinoController extends Controller
@@ -31,7 +32,7 @@ class ArduinoController extends Controller
 
         return response()->json(['status' => 'error', 'message' => 'Falha na conexão MQTT'], 500);
     }
-    public function getArduinoCode(string $machineId): StreamedResponse|JsonResponse
+    public function getArduinoCode(string $machineId): BinaryFileResponse|JsonResponse
     {
         $firmwarePath = storage_path("app/public/$machineId/pixcoin.ino.bin");
 
@@ -57,18 +58,9 @@ class ArduinoController extends Controller
 
         Log::info("[ArduinoController]: Obtenção de código para a máquina: $machineId");
 
-        return response()->stream(function () use ($firmwarePath, $machineId) {
-            $handle = fopen($firmwarePath, 'rb');
-            while (!feof($handle)) {
-                echo fread($handle, 8192);
-                flush();
-            }
-            fclose($handle);
-            if (file_exists($firmwarePath)) {
-                unlink($firmwarePath);
-                rmdir(storage_path("app/public/$machineId"));
-            }
-        }, 200, $headers);
+        return response()
+            ->download($firmwarePath, 'pixcoin.ino.bin', $headers)
+            ->deleteFileAfterSend(true);
     }
 
 }
