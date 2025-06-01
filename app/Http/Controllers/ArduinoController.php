@@ -35,42 +35,49 @@ class ArduinoController extends Controller
     }
     public function getArduinoCode(string $machineId): StreamedResponse|JsonResponse
     {
-        $firmwarePath = storage_path("app/private/$machineId/pixcoin.ino.bin");
+        try {
+            $firmwarePath = storage_path("app/private/$machineId/pixcoin.ino.bin");
 
-        if (!file_exists($firmwarePath)) {
-            return response()->json(['error' => 'Firmware não encontrado'], 404);
-        }
-
-        $fileSize = filesize($firmwarePath);
-
-        if ($fileSize < 1000000 || $fileSize > 1500000) {
-            return response()->json(['error' => 'Tamanho do firmware inválido'], 422);
-        }
-
-        $headers = [
-            'Content-Type' => 'application/octet-stream',
-            'Content-Length' => $fileSize,
-            'Cache-Control' => 'no-cache, no-store, must-revalidate',
-            'Pragma' => 'no-cache',
-            'Expires' => '0',
-            'Connection' => 'close',
-            'Content-Disposition' => 'attachment; filename="pixcoin.ino.bin"',
-        ];
-
-        Log::info("[ArduinoController]: Obtenção de código para a máquina: $machineId");
-
-        return response()->stream(function () use ($firmwarePath, $machineId) {
-            $handle = fopen($firmwarePath, 'rb');
-            while (!feof($handle)) {
-                echo fread($handle, 8192);
-                flush();
+            if (!file_exists($firmwarePath)) {
+                Log::warning("[ArduinoController]: Arquivo não encontrado na maquina: $machineId");
+                return response()->json(['error' => 'Firmware não encontrado'], 404);
             }
-            fclose($handle);
-            if (file_exists($firmwarePath)) {
-                unlink($firmwarePath);
-                rmdir(storage_path("app/private/$machineId"));
+
+            $fileSize = filesize($firmwarePath);
+
+            if ($fileSize < 1000000 || $fileSize > 1500000) {
+                Log::warning("[ArduinoController]: Tamanho de file inválido na maquina: $machineId");
+                return response()->json(['error' => 'Tamanho do firmware inválido'], 422);
             }
-        }, 200, $headers);
+
+            $headers = [
+                'Content-Type' => 'application/octet-stream',
+                'Content-Length' => $fileSize,
+                'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                'Pragma' => 'no-cache',
+                'Expires' => '0',
+                'Connection' => 'close',
+                'Content-Disposition' => 'attachment; filename="pixcoin.ino.bin"',
+            ];
+
+            Log::info("[ArduinoController]: Obtenção de código para a máquina: $machineId");
+
+            return response()->stream(function () use ($firmwarePath, $machineId) {
+                $handle = fopen($firmwarePath, 'rb');
+                while (!feof($handle)) {
+                    echo fread($handle, 8192);
+                    flush();
+                }
+                fclose($handle);
+                if (file_exists($firmwarePath)) {
+                    unlink($firmwarePath);
+                    rmdir(storage_path("app/private/$machineId"));
+                }
+            }, 200, $headers);
+        } catch (\Exception $e) {
+            Log::error("[ArduinoController]: Falha ao enviar o código remotamente: " . $e->getMessage());
+            return response()->json(['error' => 'Falha!!'], 500);
+        }
     }
 
 }
