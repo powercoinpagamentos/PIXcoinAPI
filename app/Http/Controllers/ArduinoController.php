@@ -64,40 +64,19 @@ class ArduinoController extends Controller
 
             Log::info("[ArduinoController]: Permissões do arquivo: " . decoct(fileperms($firmwarePath) & 0777));
 
-            return response()->stream(function () use ($firmwarePath, $machineId) {
-                if (ob_get_level()) {
-                    ob_end_clean();
-                }
-
-                Log::info("[ArduinoController]: Tentando abrir arquivo em $firmwarePath");
-                $handle = fopen($firmwarePath, 'rb');
-
-                if (!$handle) {
-                    Log::error("[ArduinoController]: Falha ao abrir arquivo $firmwarePath");
-                    return;
-                }
-
-                Log::info("[ArduinoController]: fopen retornou abriu");
-
-                while (!feof($handle)) {
-                    Log::info("[ArduinoController]: feof retornou abriu");
-                    echo fread($handle, 8192);
-                    flush();
-                }
-
-                Log::info("[ArduinoController]: Antes de fechar");
-                fclose($handle);
-
-                Log::info("[ArduinoController]: Lido em $firmwarePath");
-
-                if (file_exists($firmwarePath)) {
-                    unlink($firmwarePath);
-                    rmdir(storage_path("app/private/$machineId"));
-                    Log::info("[ArduinoController]: Arquivo deletado com sucesso: $firmwarePath");
-                } else {
-                    Log::warning("[ArduinoController]: Arquivo não encontrado no momento do unlink: $firmwarePath");
-                }
-            }, 200, $headers);
+            return response()->stream(function () use ($firmwarePath) {
+                if (ob_get_level()) ob_end_clean();
+                readfile($firmwarePath);
+                flush();
+            }, 200, [
+                'Content-Type' => 'application/x-binary',
+                'Content-Length' => filesize($firmwarePath),
+                'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                'Pragma' => 'no-cache',
+                'Expires' => '0',
+                'Connection' => 'keep-alive',
+                'Content-Disposition' => 'attachment; filename="pixcoin.ino.bin"',
+            ]);
 
         } catch (\Exception $e) {
             Log::error("[ArduinoController]: Falha ao enviar o código remotamente: " . $e->getMessage());
