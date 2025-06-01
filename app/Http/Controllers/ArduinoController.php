@@ -33,7 +33,7 @@ class ArduinoController extends Controller
 
         return response()->json(['status' => 'error', 'message' => 'Falha na conexão MQTT'], 500);
     }
-    public function getArduinoCode(string $machineId): StreamedResponse|JsonResponse
+    public function getArduinoCode(string $machineId): BinaryFileResponse|JsonResponse
     {
         try {
             $firmwarePath = storage_path("app/public/$machineId/pixcoin.ino.bin");
@@ -50,39 +50,15 @@ class ArduinoController extends Controller
                 return response()->json(['error' => 'Tamanho do firmware inválido'], 422);
             }
 
-            $headers = [
+            Log::info("[ArduinoController]: Obtenção de código para a máquina: $machineId");
+
+            return response()->download($firmwarePath, 'pixcoin.ino.bin', [
                 'Content-Type' => 'application/x-binary',
-                'Content-Length' => $fileSize,
                 'Cache-Control' => 'no-cache, no-store, must-revalidate',
                 'Pragma' => 'no-cache',
                 'Expires' => '0',
                 'Connection' => 'keep-alive',
-                'Content-Disposition' => 'attachment; filename="pixcoin.ino.bin"',
-            ];
-
-            Log::info("[ArduinoController]: Obtenção de código para a máquina: $machineId");
-
-            return response()->stream(function () use ($firmwarePath) {
-                if (ob_get_level()) {
-                    ob_end_clean();
-                }
-
-                $handle = fopen($firmwarePath, 'rb');
-                if (!$handle) {
-                    Log::error("[ArduinoController]: Falha ao abrir arquivo $firmwarePath");
-                    return;
-                }
-
-                while (!feof($handle)) {
-                    echo fread($handle, 8192);
-                    flush();
-                    Log::info("[ArduinoController]: Flush concluída para $firmwarePath");
-                }
-
-                Log::info("[ArduinoController]: Antes do close");
-                fclose($handle);
-                Log::info("[ArduinoController]: Transmissão concluída para $firmwarePath");
-            }, 200, $headers);
+            ]);
 
         } catch (\Exception $e) {
             Log::error("[ArduinoController]: Falha ao enviar o código remotamente: " . $e->getMessage());
