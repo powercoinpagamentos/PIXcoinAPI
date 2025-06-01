@@ -51,12 +51,12 @@ class ArduinoController extends Controller
             }
 
             $headers = [
-                'Content-Type' => 'application/octet-stream',
+                'Content-Type' => 'application/x-binary',
                 'Content-Length' => $fileSize,
                 'Cache-Control' => 'no-cache, no-store, must-revalidate',
                 'Pragma' => 'no-cache',
                 'Expires' => '0',
-                'Connection' => 'close',
+                'Connection' => 'keep-alive',
                 'Content-Disposition' => 'attachment; filename="pixcoin.ino.bin"',
             ];
 
@@ -65,11 +65,9 @@ class ArduinoController extends Controller
             Log::info("[ArduinoController]: Permissões do arquivo: " . decoct(fileperms($firmwarePath) & 0777));
 
             return response()->stream(function () use ($firmwarePath, $machineId) {
-                Log::info("[ArduinoController]: Abrindo arquivo em $firmwarePath");
-
-                ob_end_clean();
-                ini_set('output_buffering', 'off');
-                ini_set('zlib.output_compression', 0);
+                if (ob_get_level()) {
+                    ob_end_clean();
+                }
 
                 Log::info("[ArduinoController]: Tentando abrir arquivo em $firmwarePath");
                 $handle = fopen($firmwarePath, 'rb');
@@ -84,16 +82,20 @@ class ArduinoController extends Controller
                     echo fread($handle, 8192);
                     flush();
                 }
+
                 fclose($handle);
+
                 Log::info("[ArduinoController]: Lido em $firmwarePath");
+
                 if (file_exists($firmwarePath)) {
                     unlink($firmwarePath);
                     rmdir(storage_path("app/private/$machineId"));
-                    Log::info("[ArduinoController]: Arquivo deletado  na maquina: $machineId em $firmwarePath SUCESSO!");
+                    Log::info("[ArduinoController]: Arquivo deletado com sucesso: $firmwarePath");
                 } else {
-                    Log::warning("[ArduinoController]: Arquivo não encontrado na maquina: $machineId em $firmwarePath");
+                    Log::warning("[ArduinoController]: Arquivo não encontrado no momento do unlink: $firmwarePath");
                 }
             }, 200, $headers);
+
         } catch (\Exception $e) {
             Log::error("[ArduinoController]: Falha ao enviar o código remotamente: " . $e->getMessage());
             return response()->json(['error' => 'Falha!!'], 500);
