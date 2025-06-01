@@ -50,20 +50,15 @@ class ArduinoController extends Controller
 
             Log::info("[ArduinoController]: Obtenção de código para a máquina: $machineId");
 
-            return response()->streamDownload(function () use ($firmwarePath) {
-                $stream = fopen($firmwarePath, 'rb');
-                while (!feof($stream)) {
-                    echo fread($stream, 8192);
-                    flush();
-                }
-                fclose($stream);
-            }, 'pixcoin.ino.bin', [
+            return response()->stream(function () use ($firmwarePath) {
+                readfile($firmwarePath);
+            }, 200, [
                 'Content-Type' => 'application/x-binary',
                 'Content-Length' => $fileSize,
+                'Content-Disposition' => 'attachment; filename="pixcoin.ino.bin"',
                 'Cache-Control' => 'no-cache, no-store, must-revalidate',
                 'Pragma' => 'no-cache',
                 'Expires' => '0',
-                'Connection' => 'keep-alive',
             ]);
 
         } catch (\Exception $e) {
