@@ -39,7 +39,7 @@ class ArduinoController extends Controller
             if (!request()->has('ignore')) {
                 Log::info("[ArduinoController]: Redirecionando para localhost por causa do Content-Length");
 
-                $url = "http://localhost:8000/update-firmware/{$machineId}?ignore=true";
+                $url = "http://localhost:8000/api/update-firmware/$machineId?ignore=true";
 
                 $response = Http::withHeaders([
                     'Accept' => 'application/octet-stream',
