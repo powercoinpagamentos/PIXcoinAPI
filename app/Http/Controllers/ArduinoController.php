@@ -45,7 +45,7 @@ class ArduinoController extends Controller
 
             $fileSize = filesize($firmwarePath);
 
-            if ($fileSize < 1000000 || $fileSize > 1500000) {
+            if ($fileSize < 1_000_000 || $fileSize > 1_500_000) {
                 Log::warning("[ArduinoController]: Tamanho de file inválido na maquina: $machineId");
                 return response()->json(['error' => 'Tamanho do firmware inválido'], 422);
             }
@@ -61,22 +61,41 @@ class ArduinoController extends Controller
             ];
 
             Log::info("[ArduinoController]: Obtenção de código para a máquina: $machineId");
-
             Log::info("[ArduinoController]: Permissões do arquivo: " . decoct(fileperms($firmwarePath) & 0777));
 
-            return response()->stream(function () use ($firmwarePath) {
-                if (ob_get_level()) ob_end_clean();
-                readfile($firmwarePath);
-                flush();
-            }, 200, [
-                'Content-Type' => 'application/x-binary',
-                'Content-Length' => filesize($firmwarePath),
-                'Cache-Control' => 'no-cache, no-store, must-revalidate',
-                'Pragma' => 'no-cache',
-                'Expires' => '0',
-                'Connection' => 'keep-alive',
-                'Content-Disposition' => 'attachment; filename="pixcoin.ino.bin"',
-            ]);
+            $response = response()->stream(function () use ($firmwarePath) {
+                if (ob_get_level()) {
+                    ob_end_clean();
+                }
+
+                $handle = fopen($firmwarePath, 'rb');
+                if (!$handle) {
+                    Log::error("[ArduinoController]: Falha ao abrir arquivo $firmwarePath");
+                    return;
+                }
+
+                while (!feof($handle)) {
+                    echo fread($handle, 8192);
+                    flush();
+                }
+
+                fclose($handle);
+                Log::info("[ArduinoController]: Transmissão concluída para $firmwarePath");
+            }, 200, $headers);
+
+            // ⚠️ Registra uma função para deletar o arquivo após a resposta
+            register_shutdown_function(function () use ($firmwarePath, $machineId) {
+                if (file_exists($firmwarePath)) {
+                    @unlink($firmwarePath);
+                    $dir = dirname($firmwarePath);
+                    if (is_dir($dir)) {
+                        @rmdir($dir);
+                    }
+                    Log::info("[ArduinoController]: Arquivo e pasta removidos para máquina $machineId");
+                }
+            });
+
+            return $response;
 
         } catch (\Exception $e) {
             Log::error("[ArduinoController]: Falha ao enviar o código remotamente: " . $e->getMessage());
