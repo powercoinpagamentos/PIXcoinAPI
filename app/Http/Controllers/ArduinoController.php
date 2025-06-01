@@ -33,35 +33,42 @@ class ArduinoController extends Controller
 
         return response()->json(['status' => 'error', 'message' => 'Falha na conexão MQTT'], 500);
     }
-    public function getArduinoCode(string $machineId): BinaryFileResponse|JsonResponse
+    public function getArduinoCode(string $machineId)
     {
-        try {
-            $firmwarePath = storage_path("app/public/$machineId/pixcoin.ino.bin");
+        $firmwarePath = storage_path("app/public/$machineId/pixcoin.ino.bin");
 
-            if (!file_exists($firmwarePath)) {
-                Log::warning("[ArduinoController]: Arquivo não encontrado na maquina: $machineId");
-                return response()->json(['error' => 'Firmware não encontrado'], 404);
-            }
-
-            $fileSize = filesize($firmwarePath);
-            if ($fileSize < 1_000_000 || $fileSize > 1_500_000) {
-                Log::warning("[ArduinoController]: Tamanho de file inválido na maquina: $machineId");
-                return response()->json(['error' => 'Tamanho do firmware inválido'], 422);
-            }
-
-            Log::info("[ArduinoController]: Obtenção de código para a máquina: $machineId");
-
-            return response()->download($firmwarePath, 'pixcoin.ino.bin', [
-                'Content-Type' => 'application/x-binary',
-                'Cache-Control' => 'no-cache, no-store, must-revalidate',
-                'Pragma' => 'no-cache',
-                'Expires' => '0',
-            ]);
-
-        } catch (\Exception $e) {
-            Log::error("[ArduinoController]: Falha ao enviar o código remotamente: " . $e->getMessage());
-            return response()->json(['error' => 'Falha!!'], 500);
+        if (!file_exists($firmwarePath)) {
+            return response()->json(['error' => 'Firmware não encontrado'], 404);
         }
+
+        $fileSize = filesize($firmwarePath);
+        if ($fileSize < 1_000_000 || $fileSize > 1_500_000) {
+            return response()->json(['error' => 'Tamanho do firmware inválido'], 422);
+        }
+
+        $response = new StreamedResponse(function () use ($firmwarePath) {
+            $stream = fopen($firmwarePath, 'rb');
+            while (!feof($stream)) {
+                echo fread($stream, 8192);
+                flush();
+            }
+            fclose($stream);
+        });
+
+        $disposition = $response->headers->makeDisposition(
+            'attachment',
+            'pixcoin.ino.bin'
+        );
+
+        $response->headers->set('Content-Type', 'application/x-binary');
+        $response->headers->set('Content-Disposition', $disposition);
+        $response->headers->set('Content-Length', "$fileSize");
+        $response->headers->set('Cache-Control', 'no-cache, no-store, must-revalidate');
+        $response->headers->set('Pragma', 'no-cache');
+        $response->headers->set('Expires', '0');
+        $response->headers->set('Connection', 'keep-alive');
+
+        return $response;
     }
 
 
