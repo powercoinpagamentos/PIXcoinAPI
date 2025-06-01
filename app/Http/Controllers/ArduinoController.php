@@ -63,12 +63,14 @@ class ArduinoController extends Controller
             Log::info("[ArduinoController]: Obtenção de código para a máquina: $machineId");
 
             return response()->stream(function () use ($firmwarePath, $machineId) {
+                Log::info("[ArduinoController]: Abrindo arquivo em $firmwarePath");
                 $handle = fopen($firmwarePath, 'rb');
                 while (!feof($handle)) {
                     echo fread($handle, 8192);
                     flush();
                 }
                 fclose($handle);
+                Log::info("[ArduinoController]: Lido em $firmwarePath");
                 if (file_exists($firmwarePath)) {
                     unlink($firmwarePath);
                     rmdir(storage_path("app/private/$machineId"));
