@@ -2,6 +2,9 @@
 
 use Illuminate\Http\Request;
 
+ini_set('output_buffering', '4096');
+ob_start();
+
 define('LARAVEL_START', microtime(true));
 
 // Determine if the application is in maintenance mode...
