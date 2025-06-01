@@ -152,9 +152,7 @@ class AdminController extends Controller
             $fileData = base64_decode($binData['data']);
             $fileName = $binData['name'];
 
-            $path = Storage::disk('public')->put("{$request->get('id')}/{$fileName}", $fileData);
-
-            chmod(Storage::disk('public')->path($path), 0755);
+            Storage::disk('public')->put("{$request->get('id')}/{$fileName}", $fileData);
         }
 
         $machineData = $request->all();
