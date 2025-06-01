@@ -79,6 +79,7 @@ class ArduinoController extends Controller
                     Log::info("[ArduinoController]: Flush concluída para $firmwarePath");
                 }
 
+                Log::info("[ArduinoController]: Antes do close");
                 fclose($handle);
                 Log::info("[ArduinoController]: Transmissão concluída para $firmwarePath");
             }, 200, $headers);
