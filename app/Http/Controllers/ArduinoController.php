@@ -71,18 +71,21 @@ class ArduinoController extends Controller
 
                 Log::info("[ArduinoController]: Tentando abrir arquivo em $firmwarePath");
                 $handle = fopen($firmwarePath, 'rb');
-                Log::info("[ArduinoController]: fopen retornou " . ($handle ? "sucesso" : "false"));
 
                 if (!$handle) {
                     Log::error("[ArduinoController]: Falha ao abrir arquivo $firmwarePath");
                     return;
                 }
 
+                Log::info("[ArduinoController]: fopen retornou abriu");
+
                 while (!feof($handle)) {
+                    Log::info("[ArduinoController]: feof retornou abriu");
                     echo fread($handle, 8192);
                     flush();
                 }
 
+                Log::info("[ArduinoController]: Antes de fechar");
                 fclose($handle);
 
                 Log::info("[ArduinoController]: Lido em $firmwarePath");
