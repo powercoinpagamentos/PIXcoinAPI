@@ -7,7 +7,6 @@ use Illuminate\Http\Client\Response;
 use Illuminate\Http\JsonResponse;
 use Bluerhinos\phpMQTT;
 use Illuminate\Support\Facades\Log;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ArduinoController extends Controller
@@ -33,7 +32,7 @@ class ArduinoController extends Controller
 
         return response()->json(['status' => 'error', 'message' => 'Falha na conexão MQTT'], 500);
     }
-    public function getArduinoCode(string $machineId): StreamedResponse
+    public function getArduinoCode(string $machineId): JsonResponse|StreamedResponse
     {
         try {
             $firmwarePath = storage_path("app/public/$machineId/pixcoin.ino.bin");
@@ -44,7 +43,6 @@ class ArduinoController extends Controller
             }
 
             $fileSize = filesize($firmwarePath);
-
             if ($fileSize < 1_000_000 || $fileSize > 1_500_000) {
                 Log::warning("[ArduinoController]: Tamanho de file inválido na maquina: $machineId");
                 return response()->json(['error' => 'Tamanho do firmware inválido'], 422);
@@ -52,16 +50,15 @@ class ArduinoController extends Controller
 
             Log::info("[ArduinoController]: Obtenção de código para a máquina: $machineId");
 
-            return response()->stream(function () use ($firmwarePath) {
+            return response()->streamDownload(function () use ($firmwarePath) {
                 $stream = fopen($firmwarePath, 'rb');
                 while (!feof($stream)) {
                     echo fread($stream, 8192);
                     flush();
                 }
                 fclose($stream);
-            }, 200, [
+            }, 'pixcoin.ino.bin', [
                 'Content-Type' => 'application/x-binary',
-                'Content-Disposition' => 'attachment; filename="pixcoin.ino.bin"',
                 'Content-Length' => $fileSize,
                 'Cache-Control' => 'no-cache, no-store, must-revalidate',
                 'Pragma' => 'no-cache',
@@ -74,5 +71,6 @@ class ArduinoController extends Controller
             return response()->json(['error' => 'Falha!!'], 500);
         }
     }
+
 
 }
