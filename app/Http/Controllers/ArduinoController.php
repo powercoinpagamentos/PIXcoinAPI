@@ -72,6 +72,9 @@ class ArduinoController extends Controller
                 if (file_exists($firmwarePath)) {
                     unlink($firmwarePath);
                     rmdir(storage_path("app/private/$machineId"));
+                    Log::info("[ArduinoController]: Arquivo deletado  na maquina: $machineId em $firmwarePath SUCESSO!");
+                } else {
+                    Log::warning("[ArduinoController]: Arquivo não encontrado na maquina: $machineId em $firmwarePath");
                 }
             }, 200, $headers);
         } catch (\Exception $e) {
