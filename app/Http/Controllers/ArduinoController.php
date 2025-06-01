@@ -39,13 +39,15 @@ class ArduinoController extends Controller
 
             if (!file_exists($firmwarePath)) {
                 Log::warning("[ArduinoController]: Arquivo não encontrado na maquina: $machineId");
-                return response()->json(['error' => 'Firmware não encontrado'], 404);
+                return response()->json(['error' => 'Firmware não encontrado'], 404, ['Content-Length' => 1]);
             }
 
             $fileSize = filesize($firmwarePath);
             if ($fileSize < 1_000_000 || $fileSize > 1_500_000) {
                 Log::warning("[ArduinoController]: Tamanho de file inválido na maquina: $machineId");
-                return response()->json(['error' => 'Tamanho do firmware inválido'], 422);
+                return response()->json(['error' => 'Tamanho do firmware inválido'], 422, [
+                    'Content-Length' => 1,
+                ]);
             }
 
             Log::info("[ArduinoController]: Obtenção de código para a máquina: $machineId");
