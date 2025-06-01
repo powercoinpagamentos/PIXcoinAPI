@@ -7,7 +7,6 @@ use Illuminate\Http\Client\Response;
 use Illuminate\Http\JsonResponse;
 use Bluerhinos\phpMQTT;
 use Illuminate\Support\Facades\Log;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ArduinoController extends Controller
@@ -33,42 +32,44 @@ class ArduinoController extends Controller
 
         return response()->json(['status' => 'error', 'message' => 'Falha na conexão MQTT'], 500);
     }
-    public function getArduinoCode(string $machineId)
+    public function getArduinoCode(string $machineId): JsonResponse|StreamedResponse
     {
-        $firmwarePath = storage_path("app/public/$machineId/pixcoin.ino.bin");
+        try {
+            $firmwarePath = storage_path("app/public/$machineId/pixcoin.ino.bin");
 
-        if (!file_exists($firmwarePath)) {
-            return response()->json(['error' => 'Firmware não encontrado'], 404);
-        }
-
-        $fileSize = filesize($firmwarePath);
-        if ($fileSize < 1_000_000 || $fileSize > 1_500_000) {
-            return response()->json(['error' => 'Tamanho do firmware inválido'], 422);
-        }
-
-        $response = new StreamedResponse(function () use ($firmwarePath) {
-            $stream = fopen($firmwarePath, 'rb');
-            while (!feof($stream)) {
-                echo fread($stream, 8192);
-                flush();
+            if (!file_exists($firmwarePath)) {
+                Log::warning("[ArduinoController]: Arquivo não encontrado na maquina: $machineId");
+                return response()->json(['error' => 'Firmware não encontrado'], 404);
             }
-            fclose($stream);
-        });
 
-        $disposition = $response->headers->makeDisposition(
-            'attachment',
-            'pixcoin.ino.bin'
-        );
+            $fileSize = filesize($firmwarePath);
+            if ($fileSize < 1_000_000 || $fileSize > 1_500_000) {
+                Log::warning("[ArduinoController]: Tamanho de file inválido na maquina: $machineId");
+                return response()->json(['error' => 'Tamanho do firmware inválido'], 422);
+            }
 
-        $response->headers->set('Content-Type', 'application/x-binary');
-        $response->headers->set('Content-Disposition', $disposition);
-        $response->headers->set('Content-Length', "$fileSize");
-        $response->headers->set('Cache-Control', 'no-cache, no-store, must-revalidate');
-        $response->headers->set('Pragma', 'no-cache');
-        $response->headers->set('Expires', '0');
-        $response->headers->set('Connection', 'keep-alive');
+            Log::info("[ArduinoController]: Obtenção de código para a máquina: $machineId");
 
-        return $response;
+            return response()->streamDownload(function () use ($firmwarePath) {
+                $stream = fopen($firmwarePath, 'rb');
+                while (!feof($stream)) {
+                    echo fread($stream, 8192);
+                    flush();
+                }
+                fclose($stream);
+            }, 'pixcoin.ino.bin', [
+                'Content-Type' => 'application/x-binary',
+                'Content-Length' => $fileSize,
+                'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                'Pragma' => 'no-cache',
+                'Expires' => '0',
+                'Connection' => 'keep-alive',
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error("[ArduinoController]: Falha ao enviar o código remotamente: " . $e->getMessage());
+            return response()->json(['error' => 'Falha!!'], 500);
+        }
     }
 
 
