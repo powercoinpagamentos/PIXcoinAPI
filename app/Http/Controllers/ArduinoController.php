@@ -37,7 +37,7 @@ class ArduinoController extends Controller
         $firmwarePath = storage_path("app/public/$machineId/pixcoin.ino.bin");
 
         if (!file_exists($firmwarePath)) {
-            return response()->json(['error' => 'Firmware não encontrado'], 404);
+            return response()->json(['error' => 'Firmware não encontrado'], 404, ['Content-Length' => 200]);
         }
 
         $fileSize = filesize($firmwarePath);
