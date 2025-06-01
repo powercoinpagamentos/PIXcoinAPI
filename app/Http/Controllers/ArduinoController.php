@@ -58,12 +58,12 @@ class ArduinoController extends Controller
                 ->withHeaders($headers);
 
         } catch (\Exception $e) {
-            Log::error("[ArduinoController]: Falha no proxy localhost: " . $e->getMessage());
+            Log::error("[ArduinoController]: Falha no proxy localh1ost: " . $e->getMessage());
             return response()->json(['error' => 'Falha no proxy'], 500);
         }
     }
 
-    private function serveFirmwareLocally(string $machineId): Response
+    private function serveFirmwareLocally(string $machineId)
     {
         $firmwarePath = storage_path("app/public/{$machineId}/pixcoin.ino.bin");
 
