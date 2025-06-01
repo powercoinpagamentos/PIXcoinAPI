@@ -36,7 +36,7 @@ class ArduinoController extends Controller
     public function getArduinoCode(string $machineId): StreamedResponse|JsonResponse
     {
         try {
-            $firmwarePath = storage_path("app/private/$machineId/pixcoin.ino.bin");
+            $firmwarePath = storage_path("app/public/$machineId/pixcoin.ino.bin");
 
             if (!file_exists($firmwarePath)) {
                 Log::warning("[ArduinoController]: Arquivo não encontrado na maquina: $machineId");
