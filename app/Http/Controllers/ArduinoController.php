@@ -62,6 +62,8 @@ class ArduinoController extends Controller
 
             Log::info("[ArduinoController]: Obtenção de código para a máquina: $machineId");
 
+            Log::info("[ArduinoController]: Permissões do arquivo: " . decoct(fileperms($firmwarePath) & 0777));
+
             return response()->stream(function () use ($firmwarePath, $machineId) {
                 Log::info("[ArduinoController]: Abrindo arquivo em $firmwarePath");
                 $handle = fopen($firmwarePath, 'rb');
