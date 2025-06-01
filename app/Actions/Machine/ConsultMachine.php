@@ -87,7 +87,6 @@ readonly class ConsultMachine
         try {
             return Maquina::query()
                 ->where('id', $this->machineId)
-                ->where('disabled', false)
                 ->select(
                     'valorDoPulso',
                     'valor_do_pix',
