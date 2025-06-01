@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use GuzzleHttp\Client;
 use Illuminate\Http\Client\Response;
 use Illuminate\Http\JsonResponse;
 use Bluerhinos\phpMQTT;
@@ -36,44 +37,51 @@ class ArduinoController extends Controller
     public function getArduinoCode(string $machineId)
     {
         try {
-            if (!request()->has('ignore')) {
-                Log::info("[ArduinoController]: Redirecionando para localhost por causa do Content-Length");
-
-                $url = "http://localhost:8000/api/update-firmware/$machineId?ignore=true";
-
-                $response = Http::withHeaders([
-                    'Accept' => 'application/octet-stream',
-                ])->get($url);
-
-                return response($response->body(), $response->status())
-                    ->withHeaders([
-                        'Content-Type' => $response->header('Content-Type', 'application/x-binary'),
-                        'Content-Length' => $response->header('Content-Length', strlen($response->body())),
-                        'Content-Disposition' => 'attachment; filename="pixcoin.ino.bin"',
-                        'Cache-Control' => 'no-cache, no-store, must-revalidate',
-                        'Pragma' => 'no-cache',
-                        'Expires' => '0',
-                    ]);
+            // Evita loop de chamadas internas
+            if (request()->query('ignore')) {
+                return $this->serveFirmwareLocally($machineId);
             }
 
-            $firmwarePath = storage_path("app/public/$machineId/pixcoin.ino.bin");
+            // Chamada para o servidor local (PHP embutido rodando em localhost:8000)
+            $client = new Client();
+            $response = $client->get("http://localhost:8000/api/update-firmware/{$machineId}?ignore=true", [
+                'stream' => true,
+            ]);
 
-            if (!file_exists($firmwarePath)) {
-                Log::warning("[ArduinoController]: Arquivo não encontrado na máquina: $machineId");
-                return response()->json(['error' => 'Firmware não encontrado'], 404, ['Content-Length' => 1]);
+            // Repassa os headers
+            $headers = [];
+            foreach ($response->getHeaders() as $name => $values) {
+                $headers[$name] = implode(", ", $values);
             }
 
-            $fileSize = filesize($firmwarePath);
-            if ($fileSize < 1_000_000 || $fileSize > 1_500_000) {
-                Log::warning("[ArduinoController]: Tamanho de file inválido na máquina: $machineId");
-                return response()->json(['error' => 'Tamanho do firmware inválido'], 422, ['Content-Length' => 1]);
-            }
+            return response($response->getBody()->getContents(), $response->getStatusCode())
+                ->withHeaders($headers);
 
-            Log::info("[ArduinoController]: Entregando firmware diretamente para máquina: $machineId");
+        } catch (\Exception $e) {
+            Log::error("[ArduinoController]: Falha no proxy localhost: " . $e->getMessage());
+            return response()->json(['error' => 'Falha no proxy'], 500);
+        }
+    }
 
-            return response()->stream(function () use ($firmwarePath) {
-                readfile($firmwarePath);
-            }, 200, [
+    private function serveFirmwareLocally(string $machineId): Response
+    {
+        $firmwarePath = storage_path("app/public/{$machineId}/pixcoin.ino.bin");
+
+        if (!file_exists($firmwarePath)) {
+            Log::warning("[ArduinoController]: Arquivo não encontrado na maquina: $machineId");
+            return response()->json(['error' => 'Firmware não encontrado'], 404, ['Content-Length' => 1]);
+        }
+
+        $fileSize = filesize($firmwarePath);
+        if ($fileSize < 1_000_000 || $fileSize > 1_500_000) {
+            Log::warning("[ArduinoController]: Tamanho inválido do firmware: $machineId");
+            return response()->json(['error' => 'Tamanho do firmware inválido'], 422, ['Content-Length' => 1]);
+        }
+
+        Log::info("[ArduinoController]: Servindo firmware local para máquina: $machineId");
+
+        return response(file_get_contents($firmwarePath), 200)
+            ->withHeaders([
                 'Content-Type' => 'application/x-binary',
                 'Content-Length' => $fileSize,
                 'Content-Disposition' => 'attachment; filename="pixcoin.ino.bin"',
@@ -81,12 +89,5 @@ class ArduinoController extends Controller
                 'Pragma' => 'no-cache',
                 'Expires' => '0',
             ]);
-
-        } catch (\Exception $e) {
-            Log::error("[ArduinoController]: Falha ao enviar código remotamente: " . $e->getMessage());
-            return response()->json(['error' => 'Falha!!'], 500);
-        }
     }
-
-
 }
