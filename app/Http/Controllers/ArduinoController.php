@@ -61,9 +61,8 @@ class ArduinoController extends Controller
             ];
 
             Log::info("[ArduinoController]: Obtenção de código para a máquina: $machineId");
-            Log::info("[ArduinoController]: Permissões do arquivo: " . decoct(fileperms($firmwarePath) & 0777));
 
-            $response = response()->stream(function () use ($firmwarePath) {
+            return response()->stream(function () use ($firmwarePath) {
                 if (ob_get_level()) {
                     ob_end_clean();
                 }
@@ -77,25 +76,12 @@ class ArduinoController extends Controller
                 while (!feof($handle)) {
                     echo fread($handle, 8192);
                     flush();
+                    Log::info("[ArduinoController]: Flush concluída para $firmwarePath");
                 }
 
                 fclose($handle);
                 Log::info("[ArduinoController]: Transmissão concluída para $firmwarePath");
             }, 200, $headers);
-
-            // ⚠️ Registra uma função para deletar o arquivo após a resposta
-            register_shutdown_function(function () use ($firmwarePath, $machineId) {
-                if (file_exists($firmwarePath)) {
-                    @unlink($firmwarePath);
-                    $dir = dirname($firmwarePath);
-                    if (is_dir($dir)) {
-                        @rmdir($dir);
-                    }
-                    Log::info("[ArduinoController]: Arquivo e pasta removidos para máquina $machineId");
-                }
-            });
-
-            return $response;
 
         } catch (\Exception $e) {
             Log::error("[ArduinoController]: Falha ao enviar o código remotamente: " . $e->getMessage());
